@@ -4,22 +4,44 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
 
+class BaseModel(models.Model):
+    created_at: models.DateTimeField()
+    updated_at: models.DateTimeField()
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.id:
+            updated_at = datetime.now()
+        else:
+            created_at = datetime.now()
+
+        super().save(force_insert, force_update, using, update_fields)
+
+    class Meta:
+        abstract = True
+
+
 class FormaPagamento(models.Model):
-    descricao = models.CharField(max_length=30)
+    created_ata: models.DateTimeField()
+    updated_at: models.DateTimeField()
+
+    descricao = models.CharField(max_length=30, blank=False)
 
     def __str__(self):
         return self.descricao
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert, force_update, using, update_fields)
 
-class MotivoCancelamento(models.Model):
+
+class MotivoCancelamento(BaseModel):
     descricao = models.CharField(max_length=200)
 
     def __str__(self):
         return self.descricao
 
 
-class Pessoa(models.Model):
-    nome = models.CharField(max_length=200)
+class Pessoa(BaseModel):
+    nome = models.CharField(max_length=200, blank=False)
     email = models.EmailField()
     fone = PhoneNumberField()
     instagram_user = models.CharField(max_length=100)
@@ -29,14 +51,14 @@ class Pessoa(models.Model):
         return self.nome
 
 
-class TipoEvento(models.Model):
+class TipoEvento(BaseModel):
     descricao = models.CharField(max_length=100)
 
     def __str__(self):
         return self.descricao
 
 
-class Evento(models.Model):
+class Evento(BaseModel):
     NEGOCIANDO = 1
     AGENDADO = 2
     REALIZADO = 3
@@ -78,7 +100,7 @@ class Evento(models.Model):
         return f'{self.tipo_evento.descricao} {self.cliente.nome} {self.agendado_para}'
 
 
-class MovimentacaoFinanceira(models.Model):
+class MovimentacaoFinanceira(BaseModel):
     CREDITO = 'C'
     DEBITO = 'D'
 
