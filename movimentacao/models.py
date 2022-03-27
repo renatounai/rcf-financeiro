@@ -5,25 +5,14 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class BaseModel(models.Model):
-    created_at: models.DateTimeField()
-    updated_at: models.DateTimeField()
-
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if self.id:
-            updated_at = datetime.now()
-        else:
-            created_at = datetime.now()
-
-        super().save(force_insert, force_update, using, update_fields)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True
 
 
-class FormaPagamento(models.Model):
-    created_ata: models.DateTimeField()
-    updated_at: models.DateTimeField()
-
+class FormaPagamento(BaseModel):
     descricao = models.CharField(max_length=30, blank=False)
 
     def __str__(self):

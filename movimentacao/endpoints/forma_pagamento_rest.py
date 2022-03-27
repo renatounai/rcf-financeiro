@@ -1,3 +1,5 @@
+from datetime import datetime
+from time import timezone
 from typing import List, Any, Type
 
 from django.shortcuts import get_object_or_404, get_list_or_404
@@ -11,6 +13,7 @@ from ..services import forma_pagamento_service
 class FormaPagamentoOut(Schema):
     id: int
     descricao: str
+    updated_at: datetime
 
 
 class FormaPagamentoIn(Schema):
