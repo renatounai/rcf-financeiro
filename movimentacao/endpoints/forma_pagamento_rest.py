@@ -1,10 +1,9 @@
-from datetime import datetime
 from typing import List
 
 from django.shortcuts import get_object_or_404
 from ninja import Schema
 
-from .base import api, get_list_or_204, write
+from .base import api, get_list_or_204
 from ..models.forma_pagamento import FormaPagamento
 from ..services import forma_pagamento_service
 
@@ -12,7 +11,6 @@ from ..services import forma_pagamento_service
 class FormaPagamentoOut(Schema):
     id: int
     descricao: str
-    updated_at: datetime
 
 
 class FormaPagamentoIn(Schema):
@@ -29,22 +27,21 @@ def find_all(request):
     return get_list_or_204(FormaPagamento.objects.all())
 
 
-@api.post("/formas_de_pagamento")
+@api.post("/formas_de_pagamento", response={201: FormaPagamentoOut})
 def create_employee(request, payload: FormaPagamentoIn):
     forma_pagamento = FormaPagamento(descricao=payload.descricao)
     forma_pagamento_service.save(forma_pagamento)
-    return write(forma_pagamento)
+    return forma_pagamento
 
 
-@api.put("/formas_de_pagamento/{forma_pagamento_id}")
+@api.put("/formas_de_pagamento/{forma_pagamento_id}", response={200: FormaPagamentoOut})
 def update_employee(request, forma_pagamento_id: int, payload: FormaPagamentoIn):
     forma_pagamento = get_object_or_404(FormaPagamento, id=forma_pagamento_id)
     forma_pagamento.descricao = payload.descricao
     forma_pagamento_service.save(forma_pagamento)
+    return forma_pagamento
 
 
-@api.delete("/formas_de_pagamento/{forma_pagamento_id}")
+@api.delete("/formas_de_pagamento/{forma_pagamento_id}", response={200: None})
 def delete_employee(request, forma_pagamento_id: int):
-    forma_pagamento = get_object_or_404(FormaPagamento, id=forma_pagamento_id)
-    forma_pagamento.delete()
-
+    forma_pagamento_service.delete(forma_pagamento_id)
