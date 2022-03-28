@@ -1,5 +1,5 @@
 from movimentacao.exceptions.movimentacao_error import MovimentacaoErro
-from movimentacao.models import FormaPagamento
+from movimentacao.models.forma_pagamento import FormaPagamento
 
 
 def _validate(forma_pagamento: FormaPagamento) -> None:

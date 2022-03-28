@@ -1,12 +1,11 @@
 from datetime import datetime
-from time import timezone
-from typing import List, Any, Type
+from typing import List
 
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_object_or_404
 from ninja import Schema
 
-from .base import api, get_list_or_204
-from ..models import FormaPagamento
+from .base import api, get_list_or_204, write
+from ..models.forma_pagamento import FormaPagamento
 from ..services import forma_pagamento_service
 
 
@@ -34,7 +33,7 @@ def find_all(request):
 def create_employee(request, payload: FormaPagamentoIn):
     forma_pagamento = FormaPagamento(descricao=payload.descricao)
     forma_pagamento_service.save(forma_pagamento)
-    return {"id": forma_pagamento.id}
+    return write(forma_pagamento)
 
 
 @api.put("/formas_de_pagamento/{forma_pagamento_id}")
@@ -42,11 +41,10 @@ def update_employee(request, forma_pagamento_id: int, payload: FormaPagamentoIn)
     forma_pagamento = get_object_or_404(FormaPagamento, id=forma_pagamento_id)
     forma_pagamento.descricao = payload.descricao
     forma_pagamento_service.save(forma_pagamento)
-    return {"success": True}
 
 
 @api.delete("/formas_de_pagamento/{forma_pagamento_id}")
 def delete_employee(request, forma_pagamento_id: int):
     forma_pagamento = get_object_or_404(FormaPagamento, id=forma_pagamento_id)
     forma_pagamento.delete()
-    return {"success": True}
+

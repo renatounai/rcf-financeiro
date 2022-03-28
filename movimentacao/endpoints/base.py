@@ -1,4 +1,4 @@
-from django.db.models import Model, QuerySet
+from django.db.models import QuerySet
 from ninja import NinjaAPI
 
 
@@ -10,5 +10,9 @@ def get_list_or_204(queryset: QuerySet):
     if not obj_list:
         return 204, obj_list
     return obj_list
+
+
+def write(model):
+    return 201, {"id": model.id}
 
 
