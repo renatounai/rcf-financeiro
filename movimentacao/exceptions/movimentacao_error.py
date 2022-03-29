@@ -1,3 +1,5 @@
+import datetime
+
 from movimentacao.endpoints.base import api
 
 
@@ -9,7 +11,10 @@ class MovimentacaoErro(Exception):
 def validation_error(request, exc):
     return api.create_response(
         request,
-        {"message": str(exc)},
+        {
+            "message": str(exc),
+            "timestamp": datetime.datetime.now()
+        },
         status=400,
     )
 

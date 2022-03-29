@@ -3,7 +3,7 @@ from typing import List
 from django.shortcuts import get_object_or_404
 from ninja import Schema
 
-from .base import api, get_list_or_204
+from .base import api, get_list_or_204, dict_to_model
 from ..models.forma_pagamento import FormaPagamento
 from ..services import forma_pagamento_service
 
@@ -29,7 +29,8 @@ def find_all(request):
 
 @api.post("/formas_de_pagamento", response={201: FormaPagamentoOut})
 def create_employee(request, payload: FormaPagamentoIn):
-    forma_pagamento = FormaPagamento(descricao=payload.descricao)
+    forma_pagamento = FormaPagamento()
+    dict_to_model(payload.dict(), forma_pagamento)
     forma_pagamento_service.save(forma_pagamento)
     return forma_pagamento
 
@@ -37,7 +38,7 @@ def create_employee(request, payload: FormaPagamentoIn):
 @api.put("/formas_de_pagamento/{forma_pagamento_id}", response={200: FormaPagamentoOut})
 def update_employee(request, forma_pagamento_id: int, payload: FormaPagamentoIn):
     forma_pagamento = get_object_or_404(FormaPagamento, id=forma_pagamento_id)
-    forma_pagamento.descricao = payload.descricao
+    dict_to_model(payload.dict(), forma_pagamento)
     forma_pagamento_service.save(forma_pagamento)
     return forma_pagamento
 
