@@ -18,17 +18,17 @@ class FormaPagamentoIn(Schema):
 
 
 @api.get("/formas_de_pagamento/{forma_pagamento_id}", response=FormaPagamentoOut)
-def find_by_id(request, forma_pagamento_id: int):
+def find_by_id(_, forma_pagamento_id: int):
     return get_object_or_404(FormaPagamento, id=forma_pagamento_id)
 
 
 @api.get("/formas_de_pagamento", response={200: List[FormaPagamentoOut], 204: None})
-def find_all(request):
+def find_all(_):
     return get_list_or_204(FormaPagamento.objects.all())
 
 
 @api.post("/formas_de_pagamento", response={201: FormaPagamentoOut})
-def create_employee(request, payload: FormaPagamentoIn):
+def create_employee(_, payload: FormaPagamentoIn):
     forma_pagamento = FormaPagamento()
     dict_to_model(payload.dict(), forma_pagamento)
     forma_pagamento_service.save(forma_pagamento)
@@ -36,7 +36,7 @@ def create_employee(request, payload: FormaPagamentoIn):
 
 
 @api.put("/formas_de_pagamento/{forma_pagamento_id}", response={200: FormaPagamentoOut})
-def update_employee(request, forma_pagamento_id: int, payload: FormaPagamentoIn):
+def update_employee(_, forma_pagamento_id: int, payload: FormaPagamentoIn):
     forma_pagamento = get_object_or_404(FormaPagamento, id=forma_pagamento_id)
     dict_to_model(payload.dict(), forma_pagamento)
     forma_pagamento_service.save(forma_pagamento)
@@ -44,5 +44,5 @@ def update_employee(request, forma_pagamento_id: int, payload: FormaPagamentoIn)
 
 
 @api.delete("/formas_de_pagamento/{forma_pagamento_id}", response={200: None})
-def delete_employee(request, forma_pagamento_id: int):
+def delete_employee(_, forma_pagamento_id: int):
     forma_pagamento_service.delete(forma_pagamento_id)
