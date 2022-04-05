@@ -1,21 +1,21 @@
 from django.shortcuts import get_object_or_404
 
-from movimentacao.exceptions.movimentacao_error import MovimentacaoErro
+from movimentacao.exceptions.movimentacao_error import MovimentacaoError
 from movimentacao.models.evento import Evento
 
 
 def _validate(evento: Evento) -> None:
     if not evento:
-        raise MovimentacaoErro("O evento é obrigatório!")
+        raise MovimentacaoError("O evento é obrigatório!")
 
     if not evento.cliente:
-        raise MovimentacaoErro("O cliente é obrigatório!")
+        raise MovimentacaoError("O cliente é obrigatório!")
 
     if not evento.tipo_evento:
-        raise MovimentacaoErro("O tipo de evento é obrigatório!")
+        raise MovimentacaoError("O tipo de evento é obrigatório!")
 
     if not evento.status:
-        raise MovimentacaoErro("O status é obrigatório!")
+        raise MovimentacaoError("O status é obrigatório!")
 
 
 def save(evento: Evento) -> None:

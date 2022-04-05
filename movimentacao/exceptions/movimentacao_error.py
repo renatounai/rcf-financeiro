@@ -3,11 +3,11 @@ import datetime
 from movimentacao.endpoints.base import api
 
 
-class MovimentacaoErro(Exception):
+class MovimentacaoError(Exception):
     pass
 
 
-@api.exception_handler(MovimentacaoErro)
+@api.exception_handler(MovimentacaoError)
 def validation_error(request, exc):
     return api.create_response(
         request,
