@@ -18,6 +18,6 @@ def _before_save(instance: FormaPagamento, **_) -> None:
         raise MovimentacaoError(FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA)
 
     if not instance.id:
-        count = FormaPagamento.objects.filter(descricao__iexact=instance.descricao).count()
-        if count > 0:
+        exists = FormaPagamento.objects.filter(descricao__iexact=instance.descricao).exists()
+        if exists:
             raise MovimentacaoError(JA_EXISTE_FORMA_PAGAMENTO_COM_ESTA_DESCRICAO)
