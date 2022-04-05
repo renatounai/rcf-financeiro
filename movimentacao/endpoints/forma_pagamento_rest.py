@@ -28,7 +28,7 @@ def find_all(_):
 
 
 @api.post("/formas_de_pagamento", response={201: FormaPagamentoOut})
-def create_employee(_, payload: FormaPagamentoIn):
+def create_forma_pagamento(_, payload: FormaPagamentoIn):
     forma_pagamento = FormaPagamento()
     dict_to_model(payload.dict(), forma_pagamento)
     forma_pagamento.save()
@@ -36,7 +36,7 @@ def create_employee(_, payload: FormaPagamentoIn):
 
 
 @api.put("/formas_de_pagamento/{forma_pagamento_id}", response={200: FormaPagamentoOut})
-def update_employee(_, forma_pagamento_id: int, payload: FormaPagamentoIn):
+def update_forma_pagamento(_, forma_pagamento_id: int, payload: FormaPagamentoIn):
     forma_pagamento = get_object_or_404(FormaPagamento, id=forma_pagamento_id)
     dict_to_model(payload.dict(), forma_pagamento)
     forma_pagamento.save()
@@ -44,5 +44,5 @@ def update_employee(_, forma_pagamento_id: int, payload: FormaPagamentoIn):
 
 
 @api.delete("/formas_de_pagamento/{forma_pagamento_id}", response={200: None})
-def delete_employee(_, forma_pagamento_id: int):
+def delete_forma_pagamento(_, forma_pagamento_id: int):
     forma_pagamento_service.delete(forma_pagamento_id)
