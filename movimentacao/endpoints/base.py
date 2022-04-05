@@ -3,13 +3,6 @@ from ninja import NinjaAPI
 
 from movimentacao.models.base import BaseModel
 
-HTTP_STATUS_OK = 200
-HTTP_STATUS_CREATED = 201
-HTTP_STATUS_NO_CONTENT = 204
-HTTP_STATUS_BAD_REQUEST = 400
-HTTP_STATUS_NOT_FOUND = 404
-HTTP_STATUS_UNPROCESSABLE_ENTITY = 422
-
 api = NinjaAPI()
 
 
