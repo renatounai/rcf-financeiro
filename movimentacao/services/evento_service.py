@@ -9,6 +9,24 @@ from movimentacao.messages import EVENTO_STATUS_OBRIGATORIO, EVENTO_TIPO_EVENTO_
 from movimentacao.models.evento import Evento
 
 
+def _validate(evento: Evento) -> None:
+    if not evento:
+        raise MovimentacaoError(EVENTO_OBRIGATORIO)
+
+    if not evento.cliente:
+        raise MovimentacaoError(EVENTO_CLIENTE_OBRIGATORIO)
+
+    if not evento.tipo_evento:
+        raise MovimentacaoError(EVENTO_TIPO_EVENTO_OBRIGATORIO)
+
+    if not evento.status:
+        raise MovimentacaoError(EVENTO_STATUS_OBRIGATORIO)
+
+
+def save(evento: Evento) -> None:
+    evento.objects.save()
+
+
 def delete(evento_id: int) -> None:
     evento = get_object_or_404(Evento, id=evento_id)
     evento.delete()
@@ -16,14 +34,4 @@ def delete(evento_id: int) -> None:
 
 @receiver(pre_save, sender=Evento)
 def _before_save(instance: Evento, **_) -> None:
-    if not instance:
-        raise MovimentacaoError(EVENTO_OBRIGATORIO)
-
-    if not instance.cliente:
-        raise MovimentacaoError(EVENTO_CLIENTE_OBRIGATORIO)
-
-    if not instance.tipo_evento:
-        raise MovimentacaoError(EVENTO_TIPO_EVENTO_OBRIGATORIO)
-
-    if not instance.status:
-        raise MovimentacaoError(EVENTO_STATUS_OBRIGATORIO)
+    _validate(instance)

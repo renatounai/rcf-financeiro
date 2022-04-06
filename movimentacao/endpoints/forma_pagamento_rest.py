@@ -18,17 +18,17 @@ class FormaPagamentoIn(Schema):
     descricao: str
 
 
-@api.get("/formas_de_pagamento/{forma_pagamento_id}", response=FormaPagamentoOut)
+@api.get("/formas_pagamento/{forma_pagamento_id}", response=FormaPagamentoOut)
 def find_by_id(_, forma_pagamento_id: int):
     return get_object_or_404(FormaPagamento, id=forma_pagamento_id)
 
 
-@api.get("/formas_de_pagamento", response={HTTPStatus.OK: List[FormaPagamentoOut], HTTPStatus.NO_CONTENT: None})
+@api.get("/formas_pagamento", response={HTTPStatus.OK: List[FormaPagamentoOut], HTTPStatus.NO_CONTENT: None})
 def find_all(_):
     return get_list_or_204(FormaPagamento.objects.all())
 
 
-@api.post("/formas_de_pagamento", response={HTTPStatus.CREATED: FormaPagamentoOut})
+@api.post("/formas_pagamento", response={HTTPStatus.CREATED: FormaPagamentoOut})
 def create_forma_pagamento(_, payload: FormaPagamentoIn):
     forma_pagamento = FormaPagamento()
     dict_to_model(payload.dict(), forma_pagamento)
@@ -36,7 +36,7 @@ def create_forma_pagamento(_, payload: FormaPagamentoIn):
     return forma_pagamento
 
 
-@api.put("/formas_de_pagamento/{forma_pagamento_id}", response={HTTPStatus.OK: FormaPagamentoOut})
+@api.put("/formas_pagamento/{forma_pagamento_id}", response={HTTPStatus.OK: FormaPagamentoOut})
 def update_forma_pagamento(_, forma_pagamento_id: int, payload: FormaPagamentoIn):
     forma_pagamento = get_object_or_404(FormaPagamento, id=forma_pagamento_id)
     dict_to_model(payload.dict(), forma_pagamento)
@@ -44,6 +44,6 @@ def update_forma_pagamento(_, forma_pagamento_id: int, payload: FormaPagamentoIn
     return forma_pagamento
 
 
-@api.delete("/formas_de_pagamento/{forma_pagamento_id}", response={HTTPStatus.OK: None})
+@api.delete("/formas_pagamento/{forma_pagamento_id}", response={HTTPStatus.OK: None})
 def delete_forma_pagamento(_, forma_pagamento_id: int):
     forma_pagamento_service.delete(forma_pagamento_id)

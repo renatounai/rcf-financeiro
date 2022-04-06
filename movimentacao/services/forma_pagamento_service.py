@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models.signals import pre_save
 
 from movimentacao.exceptions.movimentacao_error import MovimentacaoError
-from movimentacao.messages import JA_EXISTE_FORMA_PAGAMENTO_COM_ESTA_DESCRICAO, FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA
+from movimentacao.messages import FORMA_PAGAMENTO_DESCRICAO_REPETIDA, FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA
 from movimentacao.models.forma_pagamento import FormaPagamento
 
 
@@ -23,7 +23,7 @@ def _validate(forma_pagamento: FormaPagamento):
     if not forma_pagamento.id:
         exists = FormaPagamento.objects.filter(descricao__iexact=forma_pagamento.descricao).exists()
         if exists:
-            raise MovimentacaoError(JA_EXISTE_FORMA_PAGAMENTO_COM_ESTA_DESCRICAO)
+            raise MovimentacaoError(FORMA_PAGAMENTO_DESCRICAO_REPETIDA)
 
 
 @receiver(pre_save, sender=FormaPagamento)

@@ -68,7 +68,7 @@ def find_all(_):
 def create_employee(_, payload: EventoIn):
     evento = Evento()
     dict_to_model(payload.dict(), evento)
-    evento.save()
+    evento_service.save(evento)
     return evento
 
 
@@ -76,7 +76,7 @@ def create_employee(_, payload: EventoIn):
 def update_employee(_, evento_id: int, payload: EventoIn):
     evento = get_object_or_404(Evento, id=evento_id)
     dict_to_model(payload.dict(), evento)
-    evento.save()
+    evento_service.save(evento)
     return evento
 
 
