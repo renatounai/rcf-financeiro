@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import List
 from datetime import datetime
 
@@ -22,14 +23,15 @@ class EventoOut(Schema):
     tipo_evento: str
     url_galeria: str
 
-    def __init__(self, evento: Evento):
+    def __init__(self, evento: Evento, **kwargs):
+        super().__init__(**kwargs)
         self.id = evento.id
         self.agendado_para = evento.agendado_para
-        self.valor_cobrado = evento.valor_cobrado
+        self.valor_cobrado: Decimal = evento.valor_cobrado
         self.quitado = evento.quitado
         self.status = evento.status
         self.motivo_cancelamento = evento.motivo_cancelamento.descricao
-        self.motivo_cancelamento_id = evento.motivo_cancelamento.id
+        self.motivo_cancelamento_id: int = evento.motivo_cancelamento.id
         self.cliente = evento.cliente.nome
         self.cliente.id = evento.cliente.id
         self.tipo_evento = evento.tipo_evento.descricao

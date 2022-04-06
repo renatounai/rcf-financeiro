@@ -1,9 +1,10 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
 from movimentacao.endpoints.forma_pagamento_rest import FormaPagamentoIn
 from movimentacao.exceptions.movimentacao_error import MovimentacaoError
-from movimentacao.models.forma_pagamento import FormaPagamento
 from movimentacao.messages import JA_EXISTE_FORMA_PAGAMENTO_COM_ESTA_DESCRICAO, FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA
+from movimentacao.models.forma_pagamento import FormaPagamento
 
 API_PATH = "/api/formas_de_pagamento"
 
@@ -84,7 +85,7 @@ class FormaPagamentoTest(TestCase):
 
         response = self.client.delete(f"{API_PATH}/{forma_pagamento.id}")
         self.assertEqual(response.status_code, 200)
-        with self.assertRaises(FormaPagamento.DoesNotExist):
+        with self.assertRaises(ObjectDoesNotExist):
             FormaPagamento.objects.get(pk=1)
 
     def test_repeated_description(self):

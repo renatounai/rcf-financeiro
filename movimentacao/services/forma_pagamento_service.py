@@ -7,17 +7,25 @@ from movimentacao.messages import JA_EXISTE_FORMA_PAGAMENTO_COM_ESTA_DESCRICAO, 
 from movimentacao.models.forma_pagamento import FormaPagamento
 
 
+def save(forma_pagamento: FormaPagamento) -> None:
+    forma_pagamento.save()
+
+
 def delete(forma_pagamento_id: int) -> None:
     forma_pagamento = get_object_or_404(FormaPagamento, id=forma_pagamento_id)
     forma_pagamento.delete()
 
 
-@receiver(pre_save, sender=FormaPagamento)
-def _before_save(instance: FormaPagamento, **_) -> None:
-    if not instance.descricao or not instance.descricao.strip():
+def _validate(forma_pagamento: FormaPagamento):
+    if not forma_pagamento.descricao or not forma_pagamento.descricao.strip():
         raise MovimentacaoError(FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA)
 
-    if not instance.id:
-        exists = FormaPagamento.objects.filter(descricao__iexact=instance.descricao).exists()
+    if not forma_pagamento.id:
+        exists = FormaPagamento.objects.filter(descricao__iexact=forma_pagamento.descricao).exists()
         if exists:
             raise MovimentacaoError(JA_EXISTE_FORMA_PAGAMENTO_COM_ESTA_DESCRICAO)
+
+
+@receiver(pre_save, sender=FormaPagamento)
+def _before_save(instance: FormaPagamento, **_) -> None:
+    _validate(instance)
