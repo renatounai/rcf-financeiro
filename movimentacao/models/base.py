@@ -1,7 +1,16 @@
 from django.db import models
+from django.db.models import Manager
 
 from movimentacao.exceptions.movimentacao_error import MovimentacaoError
-from movimentacao.models.ObjectWithDescription import ObjectWithDescription
+
+
+class ObjectWithDescription:
+    objects: Manager
+
+    def __init__(self, descricao: str, pk: int, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.descricao = descricao
+        self.id = pk
 
 
 class BaseModel(models.Model):
