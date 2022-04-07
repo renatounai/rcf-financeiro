@@ -9,9 +9,6 @@ class BaseModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def _validate_description(self: ObjectWithDescription, msg_obrigatorio, msg_repeated):
-        if not hasattr(self, 'descricao'):
-            return
-
         if not self.descricao or not self.descricao.strip():
             raise MovimentacaoError(msg_obrigatorio)
 
