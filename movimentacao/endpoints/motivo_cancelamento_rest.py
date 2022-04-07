@@ -27,7 +27,7 @@ def find_all(_):
 
 
 @api.post("/motivos_cancelamento", response={201: MotivoCancelamentoOut})
-def create_employee(_, payload: MotivoCancelamentoIn):
+def create_evento(_, payload: MotivoCancelamentoIn):
     motivo_cancelamento = MotivoCancelamento()
     dict_to_model(payload.dict(), motivo_cancelamento)
     motivo_cancelamento.save()
@@ -35,7 +35,7 @@ def create_employee(_, payload: MotivoCancelamentoIn):
 
 
 @api.put("/motivos_cancelamento/{motivo_cancelamento_id}", response={200: MotivoCancelamentoOut})
-def update_employee(_, motivo_cancelamento_id: int, payload: MotivoCancelamentoIn):
+def update_evento(_, motivo_cancelamento_id: int, payload: MotivoCancelamentoIn):
     motivo_cancelamento = get_object_or_404(MotivoCancelamento, id=motivo_cancelamento_id)
     dict_to_model(payload.dict(), motivo_cancelamento)
     motivo_cancelamento.save()
@@ -43,5 +43,5 @@ def update_employee(_, motivo_cancelamento_id: int, payload: MotivoCancelamentoI
 
 
 @api.delete("/motivos_cancelamento/{motivo_cancelamento_id}", response={200: None})
-def delete_employee(_, motivo_cancelamento_id: int):
+def delete_evento(_, motivo_cancelamento_id: int):
     get_object_or_404(MotivoCancelamento, id=motivo_cancelamento_id).delete()

@@ -27,14 +27,14 @@ def find_all(_):
 
 
 @api.post("/tipos_evento", response={201: TipoEventoOut})
-def create_employee(_, payload: TipoEventoIn):
+def create_evento(_, payload: TipoEventoIn):
     tipo_evento = TipoEvento(descricao=payload.descricao)
     tipo_evento.save()
     return tipo_evento
 
 
 @api.put("/tipos_evento/{tipo_evento_id}", response={200: TipoEventoOut})
-def update_employee(_, tipo_evento_id: int, payload: TipoEventoIn):
+def update_evento(_, tipo_evento_id: int, payload: TipoEventoIn):
     tipo_evento = get_object_or_404(TipoEvento, id=tipo_evento_id)
     tipo_evento.descricao = payload.descricao
     tipo_evento.save()
@@ -42,5 +42,5 @@ def update_employee(_, tipo_evento_id: int, payload: TipoEventoIn):
 
 
 @api.delete("/tipos_evento/{tipo_evento_id}", response={200: None})
-def delete_employee(_, tipo_evento_id: int):
+def delete_evento(_, tipo_evento_id: int):
     get_object_or_404(TipoEvento, id=tipo_evento_id).delete()

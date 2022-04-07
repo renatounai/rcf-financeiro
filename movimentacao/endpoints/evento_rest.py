@@ -64,7 +64,7 @@ def find_all(_):
 
 
 @api.post("/eventos", response={201: EventoOut})
-def create_employee(_, payload: EventoIn):
+def create_evento(_, payload: EventoIn):
     evento = Evento()
     dict_to_model(payload.dict(), evento)
     evento.save()
@@ -72,7 +72,7 @@ def create_employee(_, payload: EventoIn):
 
 
 @api.put("/eventos/{evento_id}", response={200: EventoOut})
-def update_employee(_, evento_id: int, payload: EventoIn):
+def update_evento(_, evento_id: int, payload: EventoIn):
     evento = get_object_or_404(Evento, id=evento_id)
     dict_to_model(payload.dict(), evento)
     evento.save()
@@ -80,5 +80,5 @@ def update_employee(_, evento_id: int, payload: EventoIn):
 
 
 @api.delete("/eventos/{evento_id}", response={200: None})
-def delete_employee(_, evento_id: int):
+def delete_evento(_, evento_id: int):
     get_object_or_404(Evento, id=evento_id).delete()
