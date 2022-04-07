@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+
 from movimentacao.endpoints.forma_pagamento_rest import api
 
 urlpatterns = [

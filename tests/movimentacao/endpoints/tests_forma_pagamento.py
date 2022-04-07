@@ -6,7 +6,6 @@ from movimentacao.exceptions.movimentacao_error import MovimentacaoError
 from movimentacao.messages import FORMA_PAGAMENTO_DESCRICAO_REPETIDA, FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA
 from movimentacao.models.forma_pagamento import FormaPagamento
 
-
 APPLICATION_JSON = "application/json"
 
 
