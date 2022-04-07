@@ -1,12 +1,11 @@
+from http import HTTPStatus
 from typing import List
 
 from django.shortcuts import get_object_or_404
 from ninja import Schema
-from http import HTTPStatus
 
 from .base import api, get_list_or_204, dict_to_model
 from ..models.forma_pagamento import FormaPagamento
-from ..services import forma_pagamento_service
 
 
 class FormaPagamentoOut(Schema):
@@ -32,7 +31,7 @@ def find_all(_):
 def create_forma_pagamento(_, payload: FormaPagamentoIn):
     forma_pagamento = FormaPagamento()
     dict_to_model(payload.dict(), forma_pagamento)
-    forma_pagamento_service.save(forma_pagamento)
+    forma_pagamento.save()
     return forma_pagamento
 
 
@@ -40,10 +39,10 @@ def create_forma_pagamento(_, payload: FormaPagamentoIn):
 def update_forma_pagamento(_, forma_pagamento_id: int, payload: FormaPagamentoIn):
     forma_pagamento = get_object_or_404(FormaPagamento, id=forma_pagamento_id)
     dict_to_model(payload.dict(), forma_pagamento)
-    forma_pagamento_service.save(forma_pagamento)
+    forma_pagamento.save()
     return forma_pagamento
 
 
 @api.delete("/formas_pagamento/{forma_pagamento_id}", response={HTTPStatus.OK: None})
 def delete_forma_pagamento(_, forma_pagamento_id: int):
-    forma_pagamento_service.delete(forma_pagamento_id)
+    get_object_or_404(FormaPagamento, id=forma_pagamento_id).delete()

@@ -5,7 +5,6 @@ from ninja import Schema
 
 from .base import api, get_list_or_204
 from ..models.tipo_evento import TipoEvento
-from ..services import tipo_evento_service
 
 
 class TipoEventoOut(Schema):
@@ -30,7 +29,7 @@ def find_all(_):
 @api.post("/tipos_evento", response={201: TipoEventoOut})
 def create_employee(_, payload: TipoEventoIn):
     tipo_evento = TipoEvento(descricao=payload.descricao)
-    tipo_evento_service.save(tipo_evento)
+    tipo_evento.save()
     return tipo_evento
 
 
@@ -38,10 +37,10 @@ def create_employee(_, payload: TipoEventoIn):
 def update_employee(_, tipo_evento_id: int, payload: TipoEventoIn):
     tipo_evento = get_object_or_404(TipoEvento, id=tipo_evento_id)
     tipo_evento.descricao = payload.descricao
-    tipo_evento_service.save(tipo_evento)
+    tipo_evento.save()
     return tipo_evento
 
 
 @api.delete("/tipos_evento/{tipo_evento_id}", response={200: None})
 def delete_employee(_, tipo_evento_id: int):
-    tipo_evento_service.delete(tipo_evento_id)
+    get_object_or_404(TipoEvento, id=tipo_evento_id).delete()
