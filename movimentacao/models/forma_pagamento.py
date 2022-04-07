@@ -1,6 +1,5 @@
 from django.db import models
 
-from movimentacao.exceptions.movimentacao_error import MovimentacaoError
 from movimentacao.messages import FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA, FORMA_PAGAMENTO_DESCRICAO_REPETIDA
 from movimentacao.models.base import BaseModel
 

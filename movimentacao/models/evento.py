@@ -2,6 +2,8 @@ from datetime import datetime
 
 from django.db import models
 
+from movimentacao.exceptions.movimentacao_error import MovimentacaoError
+from movimentacao.messages import EVENTO_CLIENTE_OBRIGATORIO, EVENTO_TIPO_EVENTO_OBRIGATORIO, EVENTO_STATUS_OBRIGATORIO
 from movimentacao.models.base import BaseModel
 from movimentacao.models.motivo_cancelamento import MotivoCancelamento
 from movimentacao.models.pessoa import Pessoa
@@ -18,6 +20,18 @@ class Evento(BaseModel):
     cliente = models.ForeignKey(Pessoa, on_delete=models.CASCADE)
     tipo_evento = models.ForeignKey(TipoEvento, on_delete=models.PROTECT)
     url_galeria = models.URLField()
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.cliente:
+            raise MovimentacaoError(EVENTO_CLIENTE_OBRIGATORIO)
+
+        if not self.tipo_evento:
+            raise MovimentacaoError(EVENTO_TIPO_EVENTO_OBRIGATORIO)
+
+        if not self.status:
+            raise MovimentacaoError(EVENTO_STATUS_OBRIGATORIO)
+
+        super().save(force_insert, force_update, using, update_fields)
 
     def agendar_para(self, horario_realizacao: datetime):
         if horario_realizacao is None:

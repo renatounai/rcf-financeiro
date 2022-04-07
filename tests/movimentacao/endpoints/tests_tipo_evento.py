@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from movimentacao.endpoints.tipo_evento_rest import TipoEventoIn
 from movimentacao.exceptions.movimentacao_error import MovimentacaoError
-from movimentacao.messages import FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA, TIPO_EVENTO_DESCRICAO_REPETIDA, \
+from movimentacao.messages import TIPO_EVENTO_DESCRICAO_REPETIDA, \
     TIPO_EVENTO_DESCRICAO_OBRIGATORIO
 from movimentacao.models.tipo_evento import TipoEvento
 

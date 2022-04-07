@@ -5,7 +5,6 @@ from ninja import Schema
 
 from .base import api, get_list_or_204, dict_to_model
 from ..models.pessoa import Pessoa
-from ..services import pessoa_service
 
 
 class PessoaOut(Schema):
@@ -39,7 +38,7 @@ def find_all(_):
 def create_employee(_, payload: PessoaIn):
     pessoa = Pessoa()
     dict_to_model(payload.dict(), pessoa)
-    pessoa_service.save(pessoa)
+    pessoa.save()
     return pessoa
 
 
@@ -47,10 +46,10 @@ def create_employee(_, payload: PessoaIn):
 def update_employee(_, pessoa_id: int, payload: PessoaIn):
     pessoa = get_object_or_404(Pessoa, id=pessoa_id)
     dict_to_model(payload.dict(), pessoa)
-    pessoa_service.save(pessoa)
+    pessoa.save()
     return pessoa
 
 
 @api.delete("/pessoas/{pessoa_id}", response={200: None})
 def delete_employee(_, pessoa_id: int):
-    pessoa_service.delete(pessoa_id)
+    return get_object_or_404(Pessoa, id=pessoa_id).delete()
