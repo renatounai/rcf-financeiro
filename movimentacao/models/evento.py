@@ -20,6 +20,7 @@ class Evento(BaseModel):
     cliente = models.ForeignKey(Pessoa, on_delete=models.CASCADE)
     tipo_evento = models.ForeignKey(TipoEvento, on_delete=models.PROTECT)
     url_galeria = models.URLField()
+    gratuito = models.BooleanField(default=False)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.cliente:

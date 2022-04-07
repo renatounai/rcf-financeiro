@@ -51,7 +51,7 @@ class MotivoCancelamentoTest(TestCase):
         self.assertEqual(response.json()["message"], MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO)
 
     def test_shoud_raise_error_when_description_is_white_space(self):
-        response = self.client.post("/api/motivos_cancelamento", {"descricao": "     "}, content_type="application/json")
+        response = self.client.post("/api/motivos_cancelamento", {"descricao": "    "}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["message"], MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO)
 
