@@ -32,6 +32,9 @@ class Evento(BaseModel):
         if not self.status:
             raise MovimentacaoError(EVENTO_STATUS_OBRIGATORIO)
 
+        if self.gratuito:
+            self.valor_cobrado = 0
+
         super().save(force_insert, force_update, using, update_fields)
 
     def agendar_para(self, horario_realizacao: datetime):
