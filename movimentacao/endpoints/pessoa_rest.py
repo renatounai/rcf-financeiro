@@ -9,7 +9,7 @@ from ..models.pessoa import Pessoa
 
 class PessoaOut(Schema):
     id: int
-    descricao: str
+    nome: str
     email: str
     fone: str
     instagram_user: str
@@ -17,7 +17,7 @@ class PessoaOut(Schema):
 
 
 class PessoaIn(Schema):
-    descricao: str
+    nome: str
     email: str
     fone: str
     instagram_user: str
