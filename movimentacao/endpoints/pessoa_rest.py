@@ -1,7 +1,10 @@
+from http import HTTPStatus
 from typing import List
 
 from django.shortcuts import get_object_or_404
 from ninja import Schema
+from phonenumber_field.serializerfields import PhoneNumberField
+from pydantic import EmailStr
 
 from .base import api, get_list_or_204, dict_to_model
 from ..models.pessoa import Pessoa
@@ -10,18 +13,18 @@ from ..models.pessoa import Pessoa
 class PessoaOut(Schema):
     id: int
     nome: str
-    email: str
-    fone: str
-    instagram_user: str
-    facebook_user: str
+    email: EmailStr = None
+    fone: str = None
+    instagram_user: str = None
+    facebook_user: str = None
 
 
 class PessoaIn(Schema):
     nome: str
-    email: str
-    fone: str
-    instagram_user: str
-    facebook_user: str
+    email: EmailStr = None
+    fone: str = None
+    instagram_user: str = None
+    facebook_user: str = None
 
 
 @api.get("/pessoas/{pessoa_id}", response=PessoaOut)
@@ -29,12 +32,12 @@ def find_by_id(_, pessoa_id: int):
     return get_object_or_404(Pessoa, id=pessoa_id)
 
 
-@api.get("/pessoas", response={200: List[PessoaOut], 204: None})
+@api.get("/pessoas", response={HTTPStatus.OK: List[PessoaOut], HTTPStatus.NO_CONTENT: None})
 def find_all(_):
     return get_list_or_204(Pessoa.objects.all())
 
 
-@api.post("/pessoas", response={201: PessoaOut})
+@api.post("/pessoas", response={HTTPStatus.CREATED: PessoaOut})
 def create_evento(_, payload: PessoaIn):
     pessoa = Pessoa()
     dict_to_model(payload.dict(), pessoa)
@@ -42,7 +45,7 @@ def create_evento(_, payload: PessoaIn):
     return pessoa
 
 
-@api.put("/pessoas/{pessoa_id}", response={200: PessoaOut})
+@api.put("/pessoas/{pessoa_id}", response={HTTPStatus.OK: PessoaOut})
 def update_evento(_, pessoa_id: int, payload: PessoaIn):
     pessoa = get_object_or_404(Pessoa, id=pessoa_id)
     dict_to_model(payload.dict(), pessoa)
@@ -50,6 +53,6 @@ def update_evento(_, pessoa_id: int, payload: PessoaIn):
     return pessoa
 
 
-@api.delete("/pessoas/{pessoa_id}", response={200: None})
+@api.delete("/pessoas/{pessoa_id}", response={HTTPStatus.OK: None})
 def delete_evento(_, pessoa_id: int):
-    return get_object_or_404(Pessoa, id=pessoa_id).delete()
+    get_object_or_404(Pessoa, id=pessoa_id).delete()

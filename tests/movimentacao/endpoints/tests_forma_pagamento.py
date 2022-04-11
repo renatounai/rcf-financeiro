@@ -56,7 +56,7 @@ class FormaPagamentoTest(TestCase):
 
     def test_shoud_raise_error_when_description_is_null(self):
         response = self.client.post("/api/formas_pagamento", {"descricao": None}, content_type="application/json")
-        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.status_code, 400)
 
     def test_shoud_update_a_forma_de_pagamento(self):
         forma_pagamento = FormaPagamento.objects.create(descricao="Pix")

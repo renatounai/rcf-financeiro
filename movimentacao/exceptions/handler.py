@@ -1,11 +1,12 @@
 import datetime
 
+from ninja.errors import ValidationError
+
 from movimentacao.endpoints.base import api
 from movimentacao.exceptions.movimentacao_error import MovimentacaoError
 
 
-@api.exception_handler(MovimentacaoError)
-def validation_error(request, exc):
+def _error_400(request, exc):
     return api.create_response(
         request,
         {
@@ -14,3 +15,13 @@ def validation_error(request, exc):
         },
         status=400,
     )
+
+
+@api.exception_handler(MovimentacaoError)
+def movimentacao_error(request, exc):
+    return _error_400(request, exc)
+
+
+@api.exception_handler(ValidationError)
+def validation_error(request, exc):
+    return _error_400(request, exc)
