@@ -1,5 +1,4 @@
 from django.db import models
-from phonenumber_field.modelfields import PhoneNumberField
 
 from movimentacao.exceptions.movimentacao_error import MovimentacaoError
 from movimentacao.messages import PESSOA_NOME_OBRIGATORIO

@@ -1,7 +1,6 @@
-CREDITO = 'C'
-DEBITO = 'D'
+from django.db import models
 
-TIPO_LANCAMENTO = (
-    (CREDITO, 'Crédito'),
-    (DEBITO, 'Débito'),
-)
+
+class TipoLancamento(models.TextChoices):
+    CREDITO = 'C', "Crédito"
+    DEBITO = 'D', "Débito"

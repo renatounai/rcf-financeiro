@@ -3,7 +3,6 @@ from typing import List
 
 from django.shortcuts import get_object_or_404
 from ninja import Schema
-from phonenumber_field.serializerfields import PhoneNumberField
 from pydantic import EmailStr
 
 from .base import api, get_list_or_204, dict_to_model

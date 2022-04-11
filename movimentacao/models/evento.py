@@ -7,7 +7,7 @@ from movimentacao.messages import EVENTO_CLIENTE_OBRIGATORIO, EVENTO_TIPO_EVENTO
 from movimentacao.models.base import BaseModel
 from movimentacao.models.motivo_cancelamento import MotivoCancelamento
 from movimentacao.models.pessoa import Pessoa
-from movimentacao.models.status_evento import STATUS_EVENTO, NEGOCIANDO, AGENDADO
+from movimentacao.models.status_evento import StatusEvento
 from movimentacao.models.tipo_evento import TipoEvento
 
 
@@ -15,7 +15,7 @@ class Evento(BaseModel):
     agendado_para = models.DateTimeField(null=True)
     valor_cobrado = models.DecimalField(max_digits=9, decimal_places=2, null=True)
     quitado = models.BooleanField(default=False)
-    status = models.IntegerField(choices=STATUS_EVENTO, default=NEGOCIANDO)
+    status = models.IntegerField(choices=StatusEvento.choices, default=StatusEvento.NEGOCIANDO)
     motivo_cancelamento = models.ForeignKey(MotivoCancelamento, on_delete=models.PROTECT, null=True)
     cliente = models.ForeignKey(Pessoa, on_delete=models.CASCADE)
     tipo_evento = models.ForeignKey(TipoEvento, on_delete=models.PROTECT)
@@ -41,11 +41,11 @@ class Evento(BaseModel):
         if horario_realizacao is None:
             raise ValueError("O horário de realização do evento é obrigatório!")
 
-        if self.status != NEGOCIANDO:
+        if self.status != StatusEvento.NEGOCIANDO:
             raise ValueError("Só é possível agendar eventos que ainda estão em negociação")
 
         self.agendado_para = horario_realizacao
-        self.status = AGENDADO
+        self.status = StatusEvento.AGENDADO
 
     def __str__(self):
         return f'{self.tipo_evento.descricao} {self.cliente.nome} {self.agendado_para}'
