@@ -7,6 +7,7 @@ from ninja import Schema
 
 from .base import api, get_list_or_204, dict_to_model
 from ..models.evento import Evento
+from ..services import evento_service
 
 
 class EventoOut(Schema):
@@ -67,7 +68,7 @@ def find_all(_):
 def create_evento(_, payload: EventoIn):
     evento = Evento()
     dict_to_model(payload.dict(), evento)
-    evento.save()
+    evento_service.save(evento)
     return evento
 
 
@@ -75,7 +76,7 @@ def create_evento(_, payload: EventoIn):
 def update_evento(_, evento_id: int, payload: EventoIn):
     evento = get_object_or_404(Evento, id=evento_id)
     dict_to_model(payload.dict(), evento)
-    evento.save()
+    evento_service.save(evento)
     return evento
 
 

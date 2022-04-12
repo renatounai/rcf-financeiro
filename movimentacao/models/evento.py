@@ -22,7 +22,7 @@ class Evento(BaseModel):
     url_galeria = models.URLField()
     gratuito = models.BooleanField(default=False)
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def clean(self):
         if not self.cliente:
             raise MovimentacaoError(EVENTO_CLIENTE_OBRIGATORIO)
 
@@ -34,8 +34,6 @@ class Evento(BaseModel):
 
         if self.gratuito:
             self.valor_cobrado = 0
-
-        super().save(force_insert, force_update, using, update_fields)
 
     def agendar_para(self, horario_realizacao: datetime):
         if horario_realizacao is None:

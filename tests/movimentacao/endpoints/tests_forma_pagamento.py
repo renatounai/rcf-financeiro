@@ -5,6 +5,7 @@ from movimentacao.endpoints.forma_pagamento_rest import FormaPagamentoIn
 from movimentacao.exceptions.movimentacao_error import MovimentacaoError
 from movimentacao.messages import FORMA_PAGAMENTO_DESCRICAO_REPETIDA, FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA
 from movimentacao.models.forma_pagamento import FormaPagamento
+from movimentacao.services import forma_pagamento_service
 
 APPLICATION_JSON = "application/json"
 
@@ -47,7 +48,8 @@ class FormaPagamentoTest(TestCase):
     def test_shoud_raise_error_when_missing_description(self):
         response = self.client.post("/api/formas_pagamento", {"descricao": ""}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(response.json()["message"].find(FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA))
+        print(response.json())
+        self.assertEqual(response.json()["message"], FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA)
 
     def test_shoud_raise_error_when_description_is_white_space(self):
         response = self.client.post("/api/formas_pagamento", {"descricao": "     "}, content_type="application/json")
@@ -89,4 +91,4 @@ class FormaPagamentoTest(TestCase):
     def test_repeated_description(self):
         FormaPagamento.objects.create(descricao="Pix")
         with self.assertRaises(MovimentacaoError, msg=FORMA_PAGAMENTO_DESCRICAO_REPETIDA):
-            FormaPagamento.objects.create(descricao="Pix")
+            forma_pagamento_service.save(FormaPagamento(descricao="Pix"))

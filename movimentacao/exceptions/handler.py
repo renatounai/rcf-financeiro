@@ -30,4 +30,5 @@ def validation_error(request, exc):
 
 @api.exception_handler(DjangoValidationError)
 def django_validation_error(request, exc):
+    print(exc)
     return _error_400(request, exc)

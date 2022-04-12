@@ -6,6 +6,7 @@ from movimentacao.exceptions.movimentacao_error import MovimentacaoError
 from movimentacao.messages import TIPO_EVENTO_DESCRICAO_REPETIDA, \
     MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO
 from movimentacao.models.motivo_cancelamento import MotivoCancelamento
+from movimentacao.services import motivo_cancelamento_service
 
 APPLICATION_JSON = "application/json"
 
@@ -90,4 +91,4 @@ class MotivoCancelamentoTest(TestCase):
     def test_repeated_description(self):
         MotivoCancelamento.objects.create(descricao="Sem dinheiro")
         with self.assertRaises(MovimentacaoError, msg=TIPO_EVENTO_DESCRICAO_REPETIDA):
-            MotivoCancelamento.objects.create(descricao="Sem dinheiro")
+            motivo_cancelamento_service.save(MotivoCancelamento(descricao="Sem dinheiro"))
