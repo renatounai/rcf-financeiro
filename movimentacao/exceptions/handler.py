@@ -1,5 +1,6 @@
 import datetime
 
+from django.core.exceptions import ValidationError as DjangoValidationError
 from ninja.errors import ValidationError
 
 from movimentacao.endpoints.base import api
@@ -24,4 +25,9 @@ def movimentacao_error(request, exc):
 
 @api.exception_handler(ValidationError)
 def validation_error(request, exc):
+    return _error_400(request, exc)
+
+
+@api.exception_handler(DjangoValidationError)
+def django_validation_error(request, exc):
     return _error_400(request, exc)

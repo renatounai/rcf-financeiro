@@ -40,6 +40,7 @@ def find_all(_):
 def create_evento(_, payload: PessoaIn):
     pessoa = Pessoa()
     dict_to_model(payload.dict(), pessoa)
+    pessoa.full_clean()
     pessoa.save()
     return pessoa
 
@@ -48,6 +49,7 @@ def create_evento(_, payload: PessoaIn):
 def update_evento(_, pessoa_id: int, payload: PessoaIn):
     pessoa = get_object_or_404(Pessoa, id=pessoa_id)
     dict_to_model(payload.dict(), pessoa)
+    pessoa.full_clean()
     pessoa.save()
     return pessoa
 

@@ -47,7 +47,7 @@ class FormaPagamentoTest(TestCase):
     def test_shoud_raise_error_when_missing_description(self):
         response = self.client.post("/api/formas_pagamento", {"descricao": ""}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()["message"], FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA)
+        self.assertTrue(response.json()["message"].find(FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA))
 
     def test_shoud_raise_error_when_description_is_white_space(self):
         response = self.client.post("/api/formas_pagamento", {"descricao": "     "}, content_type="application/json")
