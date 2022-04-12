@@ -30,7 +30,6 @@ class PessoaTest(TestCase):
         pessoa = Pessoa.objects.create(nome="Renato")
 
         response = self.client.get(f"/api/pessoas/{pessoa.id}")
-        print(response)
 
         pessoa = response.json()
         self.assertEqual(response.status_code, 200)
