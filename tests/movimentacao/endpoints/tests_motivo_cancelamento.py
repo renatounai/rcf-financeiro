@@ -17,7 +17,7 @@ class MotivoCancelamentoTest(TestCase):
         MotivoCancelamento.objects.create(descricao="Não tem dinheiro")
         MotivoCancelamento.objects.create(descricao="Não gostou das fotos")
 
-        response = self.client.get("/api/motivos_cancelamento")
+        response = self.client.get("/api/motivos_cancelamento/")
         formas = response.json()
 
         self.assertEqual(response.status_code, 200)
@@ -27,7 +27,7 @@ class MotivoCancelamentoTest(TestCase):
         self.assertEqual(formas[1]["descricao"], "Não gostou das fotos")
 
     def test_shoud_return_204_if_nothing_found(self):
-        response = self.client.get("/api/motivos_cancelamento")
+        response = self.client.get("/api/motivos_cancelamento/")
         self.assertEqual(response.status_code, 204)
 
     def test_shoud_get_a_tipo_de_evento(self):
@@ -42,22 +42,22 @@ class MotivoCancelamentoTest(TestCase):
     def test_should_create_a_forma_de_pagamento(self):
         pix = MotivoCancelamentoIn(descricao="Pix")
 
-        response = self.client.post("/api/motivos_cancelamento", pix.__dict__, content_type="application/json")
+        response = self.client.post("/api/motivos_cancelamento/", pix.__dict__, content_type="application/json")
         self.assertEqual(response.status_code, 201)
         self.assertEqual(MotivoCancelamento.objects.count(), 1)
 
     def test_shoud_raise_error_when_missing_description(self):
-        response = self.client.post("/api/motivos_cancelamento", {"descricao": ""}, content_type="application/json")
+        response = self.client.post("/api/motivos_cancelamento/", {"descricao": ""}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["message"], MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO)
 
     def test_shoud_raise_error_when_description_is_white_space(self):
-        response = self.client.post("/api/motivos_cancelamento", {"descricao": "    "}, content_type="application/json")
+        response = self.client.post("/api/motivos_cancelamento/", {"descricao": "    "}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["message"], MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO)
 
     def test_shoud_raise_error_when_description_is_null(self):
-        response = self.client.post("/api/motivos_cancelamento", {"descricao": None}, content_type="application/json")
+        response = self.client.post("/api/motivos_cancelamento/", {"descricao": None}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
 
     def test_shoud_update_a_forma_de_pagamento(self):

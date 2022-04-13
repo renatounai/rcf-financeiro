@@ -3,7 +3,7 @@ import datetime
 from django.core.exceptions import ValidationError as DjangoValidationError
 from ninja.errors import ValidationError
 
-from movimentacao.endpoints.base import api
+from movimentacao.endpoints.api import api
 from movimentacao.exceptions.movimentacao_error import MovimentacaoError
 
 

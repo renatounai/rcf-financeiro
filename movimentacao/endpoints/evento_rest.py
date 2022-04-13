@@ -1,86 +1,71 @@
-from datetime import datetime
-from decimal import Decimal
 from http import HTTPStatus
-from typing import List
 
-from django.shortcuts import get_object_or_404
-from ninja import Schema
+from ninja import Router
 
-from .base import api, get_list_or_204, dict_to_model
-from ..models.evento import Evento
-from ..services import evento_service
+from utils.api_utils import get_list_or_204
+from ..models.pessoa import Pessoa
 
+# class EventoOut(Schema):
+#     id: int
+#     agendado_para: datetime
+#     valor_cobrado: float
+#     quitado: bool
+#     status: int
+#     motivo_cancelamento: MotivoCancelamento
+#     cliente: Pessoa
+#     tipo_evento: TipoEvento
+#     url_galeria: str
+#
+#
+# class PessoaOut(Schema):
+#     id: int
+#     nome: str
+#     email: EmailStr = None
+#     fone: str = None
+#     instagram_user: str = None
+#     facebook_user: str = None
 
-class EventoOut(Schema):
-    id: int
-    agendado_para: datetime
-    valor_cobrado: float
-    quitado: bool
-    status: int
-    motivo_cancelamento: str
-    motivo_cancelamento_id: str
-    cliente: str
-    cliente_id: str
-    tipo_evento: str
-    url_galeria: str
-
-    def __init__(self, evento: Evento, **kwargs):
-        super().__init__(**kwargs)
-        self.id = evento.id
-        self.agendado_para = evento.agendado_para
-        self.valor_cobrado: Decimal = evento.valor_cobrado
-        self.quitado = evento.quitado
-        self.status = evento.status
-        self.motivo_cancelamento = evento.motivo_cancelamento.descricao
-        self.motivo_cancelamento_id: int = evento.motivo_cancelamento.id
-        self.cliente = evento.cliente.nome
-        self.cliente.id = evento.cliente.id
-        self.tipo_evento = evento.tipo_evento.descricao
-        self.tipo_evento_id = evento.tipo_evento.id
-        self.url_galeria = evento.url_galeria
-
-
-class EventoIn(Schema):
-    agendado_para: datetime
-    valor_cobrado: float
-    quitado: bool
-    status: int
-    motivo_cancelamento_id: int
-    motivo_cancelamento: str
-    cliente_id: id
-    cliente: str
-    tipo_evento_id: id
-    tipo_evento: str
-    url_galeria: str
+# class EventoIn(Schema):
+#     agendado_para: datetime = None
+#     valor_cobrado: float = None
+#     quitado: bool
+#     status: StatusEvento
+#     motivo_cancelamento_id: int = None
+#     motivo_cancelamento_descricao: str = None
+#     cliente_id: id = None
+#     cliente_nome: str = None
+#     tipo_evento_id: id = None
+#     tipo_evento_descricao: str = None
+#     url_galeria: str = None
+#     gratuito: bool
 
 
-@api.get("/eventos/{evento_id}", response=EventoOut)
-def find_by_id(_, evento_id: int):
-    return EventoOut(get_object_or_404(Evento, id=evento_id))
+# @api.get("/eventos/{evento_id}", response=EventoOut)
+# def find_by_id(_, evento_id: int):
+#     return EventoOut(get_object_or_404(Evento, id=evento_id))
+
+router = Router()
 
 
-@api.get("/eventos", response={HTTPStatus.OK: List[EventoOut], HTTPStatus.NO_CONTENT: None})
+@router.get("/", response={HTTPStatus.NO_CONTENT: None})
 def find_all(_):
-    eventos = map(EventoOut, Evento.objects.all())
-    return get_list_or_204(eventos)
+    return get_list_or_204(Pessoa.objects.all())
 
 
-@api.post("/eventos", response={HTTPStatus.CREATED: EventoOut})
-def create_evento(_, payload: EventoIn):
-    evento = Evento()
-    dict_to_model(payload.dict(), evento)
-    evento_service.save(evento)
-    return evento
-
-
-@api.put("/eventos/{evento_id}", response={HTTPStatus.OK: EventoOut})
-def update_evento(_, evento_id: int, payload: EventoIn):
-    evento = get_object_or_404(Evento, id=evento_id)
-    dict_to_model(payload.dict(), evento)
-    evento_service.save(evento)
-    return evento
-
-
-@api.delete("/eventos/{evento_id}", response={HTTPStatus.OK: None})
-def delete_evento(_, evento_id: int):
-    get_object_or_404(Evento, id=evento_id).delete()
+# @api.post("/eventos", response={HTTPStatus.CREATED: EventoOut})
+# def create_evento(_, payload: EventoIn):
+#     evento = Evento()
+#     evento_service.save_evento_in(payload)
+#     return evento
+#
+#
+# @api.put("/eventos/{evento_id}", response={HTTPStatus.OK: EventoOut})
+# def update_evento(_, evento_id: int, payload: EventoIn):
+#     evento = get_object_or_404(Evento, id=evento_id)
+#     evento_service.save_evento_in(payload)
+#     return evento
+#
+#
+# @api.delete("/eventos/{evento_id}", response={HTTPStatus.OK: None})
+# def delete_evento(_, evento_id: int):
+#     get_object_or_404(Evento, id=evento_id).delete()

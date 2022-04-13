@@ -16,7 +16,7 @@ class FormaPagamentoTest(TestCase):
         FormaPagamento.objects.create(descricao="Pix")
         FormaPagamento.objects.create(descricao="Dinheiro")
 
-        response = self.client.get("/api/formas_pagamento")
+        response = self.client.get("/api/formas_pagamento/")
         formas = response.json()
 
         self.assertEqual(response.status_code, 200)
@@ -26,7 +26,7 @@ class FormaPagamentoTest(TestCase):
         self.assertEqual(formas[1]["descricao"], "Dinheiro")
 
     def test_shoud_return_204_if_nothing_found(self):
-        response = self.client.get("/api/formas_pagamento")
+        response = self.client.get("/api/formas_pagamento/")
         self.assertEqual(response.status_code, 204)
 
     def test_shoud_get_a_forma_de_pagamento(self):
@@ -41,22 +41,22 @@ class FormaPagamentoTest(TestCase):
     def test_should_create_a_forma_de_pagamento(self):
         pix = FormaPagamentoIn(descricao="Pix")
 
-        response = self.client.post("/api/formas_pagamento", pix.__dict__, content_type="application/json")
+        response = self.client.post("/api/formas_pagamento/", pix.__dict__, content_type="application/json")
         self.assertEqual(response.status_code, 201)
         self.assertEqual(FormaPagamento.objects.count(), 1)
 
     def test_shoud_raise_error_when_missing_description(self):
-        response = self.client.post("/api/formas_pagamento", {"descricao": ""}, content_type="application/json")
+        response = self.client.post("/api/formas_pagamento/", {"descricao": ""}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["message"], FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA)
 
     def test_shoud_raise_error_when_description_is_white_space(self):
-        response = self.client.post("/api/formas_pagamento", {"descricao": "     "}, content_type="application/json")
+        response = self.client.post("/api/formas_pagamento/", {"descricao": "     "}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["message"], FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA)
 
     def test_shoud_raise_error_when_description_is_null(self):
-        response = self.client.post("/api/formas_pagamento", {"descricao": None}, content_type="application/json")
+        response = self.client.post("/api/formas_pagamento/", {"descricao": None}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
 
     def test_shoud_update_a_forma_de_pagamento(self):

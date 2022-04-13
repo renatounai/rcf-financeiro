@@ -13,7 +13,7 @@ class PessoaTest(TestCase):
         Pessoa.objects.create(nome="Renato")
         Pessoa.objects.create(nome="Ellen")
 
-        response = self.client.get("/api/pessoas")
+        response = self.client.get("/api/pessoas/")
         formas = response.json()
 
         self.assertEqual(response.status_code, 200)
@@ -23,7 +23,7 @@ class PessoaTest(TestCase):
         self.assertEqual(formas[1]["nome"], "Ellen")
 
     def test_shoud_return_204_if_nothing_found(self):
-        response = self.client.get("/api/pessoas")
+        response = self.client.get("/api/pessoas/")
         self.assertEqual(response.status_code, 204)
 
     def test_shoud_get_a_pessoa_only_name(self):
@@ -59,7 +59,7 @@ class PessoaTest(TestCase):
     def test_should_create_a_pessoa_only_name(self):
         pessoa = PessoaIn(nome="Renato")
 
-        response = self.client.post("/api/pessoas", pessoa.__dict__, content_type=APPLICATION_JSON)
+        response = self.client.post("/api/pessoas/", pessoa.__dict__, content_type=APPLICATION_JSON)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Pessoa.objects.count(), 1)
 
@@ -70,13 +70,13 @@ class PessoaTest(TestCase):
                           instagram_user="renatounai",
                           facebook_user="renatounaif")
 
-        response = self.client.post("/api/pessoas", pessoa.__dict__, content_type=APPLICATION_JSON)
+        response = self.client.post("/api/pessoas/", pessoa.__dict__, content_type=APPLICATION_JSON)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Pessoa.objects.count(), 1)
 
     def test_should_raise_error_if_email_is_invalid(self):
         pessoa = {"nome": "Renato", "email": "renato"}
-        response = self.client.post("/api/pessoas", pessoa, content_type=APPLICATION_JSON)
+        response = self.client.post("/api/pessoas/", pessoa, content_type=APPLICATION_JSON)
         self.assertEqual(response.status_code, 400)
 
     def test_shoud_remove_domain_from_social_media_ids_without_query_string(self):
@@ -98,7 +98,7 @@ class PessoaTest(TestCase):
         self._validate_social_media(pessoa)
 
     def _validate_social_media(self, pessoa):
-        response = self.client.post("/api/pessoas", pessoa.__dict__, content_type=APPLICATION_JSON)
+        response = self.client.post("/api/pessoas/", pessoa.__dict__, content_type=APPLICATION_JSON)
         pessoa_saved = response.json()
         Pessoa.objects.get(pk=pessoa_saved["id"])
         self.assertEqual("renatounai", pessoa_saved["instagram_user"])

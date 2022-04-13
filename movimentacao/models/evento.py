@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from django.db import models
 
@@ -21,6 +22,19 @@ class Evento(BaseModel):
     tipo_evento = models.ForeignKey(TipoEvento, on_delete=models.PROTECT)
     url_galeria = models.URLField()
     gratuito = models.BooleanField(default=False)
+
+    def __init__(self, evento = None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not evento:
+            return
+
+        self.agendado_para = evento.agendado_para
+        self.valor_cobrado = evento.valor_cobrado
+        self.quitado = evento.quitado
+        self.status = evento.status
+        self.url_galeria = evento.url_galeria
+        self.gratuito = evento.gratuito
 
     def clean(self):
         if not self.cliente:

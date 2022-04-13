@@ -17,7 +17,7 @@ class TipoEventoTest(TestCase):
         TipoEvento.objects.create(descricao="Boudoir")
         TipoEvento.objects.create(descricao="Gestante")
 
-        response = self.client.get("/api/tipos_evento")
+        response = self.client.get("/api/tipos_evento/")
         formas = response.json()
 
         self.assertEqual(response.status_code, 200)
@@ -27,7 +27,7 @@ class TipoEventoTest(TestCase):
         self.assertEqual(formas[1]["descricao"], "Gestante")
 
     def test_shoud_return_204_if_nothing_found(self):
-        response = self.client.get("/api/tipos_evento")
+        response = self.client.get("/api/tipos_evento/")
         self.assertEqual(response.status_code, 204)
 
     def test_shoud_get_a_tipo_de_evento(self):
@@ -42,22 +42,22 @@ class TipoEventoTest(TestCase):
     def test_should_create_a_forma_de_pagamento(self):
         pix = TipoEventoIn(descricao="Pix")
 
-        response = self.client.post("/api/tipos_evento", pix.__dict__, content_type="application/json")
+        response = self.client.post("/api/tipos_evento/", pix.__dict__, content_type="application/json")
         self.assertEqual(response.status_code, 201)
         self.assertEqual(TipoEvento.objects.count(), 1)
 
     def test_shoud_raise_error_when_missing_description(self):
-        response = self.client.post("/api/tipos_evento", {"descricao": ""}, content_type="application/json")
+        response = self.client.post("/api/tipos_evento/", {"descricao": ""}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["message"], TIPO_EVENTO_DESCRICAO_OBRIGATORIO)
 
     def test_shoud_raise_error_when_description_is_white_space(self):
-        response = self.client.post("/api/tipos_evento", {"descricao": "     "}, content_type="application/json")
+        response = self.client.post("/api/tipos_evento/", {"descricao": "     "}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["message"], TIPO_EVENTO_DESCRICAO_OBRIGATORIO)
 
     def test_shoud_raise_error_when_description_is_null(self):
-        response = self.client.post("/api/tipos_evento", {"descricao": None}, content_type="application/json")
+        response = self.client.post("/api/tipos_evento/", {"descricao": None}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
 
     def test_shoud_update_a_forma_de_pagamento(self):

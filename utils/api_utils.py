@@ -1,8 +1,3 @@
-from ninja import NinjaAPI
-
-api = NinjaAPI()
-
-
 def get_list_or_204(list_of_models):
     obj_list = list(list_of_models)
     if not obj_list:
