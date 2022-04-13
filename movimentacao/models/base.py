@@ -1,7 +1,6 @@
 from django.db import models
 from django.db.models import Manager
 
-from movimentacao.exceptions.movimentacao_error import MovimentacaoError
 from utils.string_utils import is_empty
 
 
@@ -19,6 +18,8 @@ class BaseModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def _validate_description(self: ObjectWithDescription, msg_obrigatorio, msg_repeated):
+        from movimentacao.exceptions.handler import MovimentacaoError
+
         if is_empty(self.descricao):
             raise MovimentacaoError(msg_obrigatorio)
 

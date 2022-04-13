@@ -1,6 +1,5 @@
 from django.db import models
 
-from movimentacao.exceptions.movimentacao_error import MovimentacaoError
 from movimentacao.messages import PESSOA_NOME_OBRIGATORIO
 from movimentacao.models.base import BaseModel
 
@@ -13,6 +12,8 @@ class Pessoa(BaseModel):
     facebook_user = models.CharField(max_length=100, null=True, blank=True)
 
     def clean(self):
+        from movimentacao.exceptions.handler import MovimentacaoError
+
         if not self.nome or not self.nome.strip():
             raise MovimentacaoError(PESSOA_NOME_OBRIGATORIO)
 

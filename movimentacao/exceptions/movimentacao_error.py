@@ -1,4 +1,0 @@
-class MovimentacaoError(Exception):
-    pass
-
-

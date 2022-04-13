@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 
 from django.db import models
 
-from movimentacao.exceptions.movimentacao_error import MovimentacaoError
 from movimentacao.messages import EVENTO_CLIENTE_OBRIGATORIO, EVENTO_TIPO_EVENTO_OBRIGATORIO, EVENTO_STATUS_OBRIGATORIO
 from movimentacao.models.base import BaseModel
 from movimentacao.models.motivo_cancelamento import MotivoCancelamento
@@ -29,22 +28,24 @@ class Evento(BaseModel):
         if not evento:
             return
 
-        self.agendado_para = evento.agendado_para
-        self.valor_cobrado = evento.valor_cobrado
-        self.quitado = evento.quitado
-        self.status = evento.status
-        self.url_galeria = evento.url_galeria
-        self.gratuito = evento.gratuito
+        # self.agendado_para = evento.agendado_para
+        # self.valor_cobrado = evento.valor_cobrado
+        # self.quitado = evento.quitado
+        # self.status = evento.status
+        # self.url_galeria = evento.url_galeria
+        # self.gratuito = evento.gratuito
 
     def clean(self):
-        if not self.cliente:
-            raise MovimentacaoError(EVENTO_CLIENTE_OBRIGATORIO)
+        from movimentacao.exceptions.handler import MovimentacaoError
 
-        if not self.tipo_evento:
-            raise MovimentacaoError(EVENTO_TIPO_EVENTO_OBRIGATORIO)
-
-        if not self.status:
-            raise MovimentacaoError(EVENTO_STATUS_OBRIGATORIO)
+        # if not self.cliente:
+        #     raise MovimentacaoError(EVENTO_CLIENTE_OBRIGATORIO)
+        #
+        # if not self.tipo_evento:
+        #     raise MovimentacaoError(EVENTO_TIPO_EVENTO_OBRIGATORIO)
+        #
+        # if not self.status:
+        #     raise MovimentacaoError(EVENTO_STATUS_OBRIGATORIO)
 
         if self.gratuito:
             self.valor_cobrado = 0

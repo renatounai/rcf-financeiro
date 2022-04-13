@@ -1,7 +1,6 @@
-from movimentacao.models import \
-    evento, \
+from . import motivo_cancelamento, \
     forma_pagamento, \
-    motivo_cancelamento,\
-    movimentacao_financeira,\
-    pessoa,\
-    tipo_evento
+    movimentacao_financeira, \
+    pessoa, \
+    tipo_evento, \
+    evento

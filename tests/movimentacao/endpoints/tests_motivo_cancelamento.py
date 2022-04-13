@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
 from movimentacao.endpoints.motivo_cancelamento_rest import MotivoCancelamentoIn
-from movimentacao.exceptions.movimentacao_error import MovimentacaoError
+from movimentacao.exceptions.handler import MovimentacaoError
 from movimentacao.messages import TIPO_EVENTO_DESCRICAO_REPETIDA, \
     MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO
 from movimentacao.models.motivo_cancelamento import MotivoCancelamento

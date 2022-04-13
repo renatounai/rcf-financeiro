@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
 from movimentacao.endpoints.forma_pagamento_rest import FormaPagamentoIn
-from movimentacao.exceptions.movimentacao_error import MovimentacaoError
+from movimentacao.exceptions.handler import MovimentacaoError
 from movimentacao.messages import FORMA_PAGAMENTO_DESCRICAO_REPETIDA, FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA
 from movimentacao.models.forma_pagamento import FormaPagamento
 from movimentacao.services import forma_pagamento_service

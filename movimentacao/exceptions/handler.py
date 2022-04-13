@@ -4,7 +4,10 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from ninja.errors import ValidationError
 
 from movimentacao.endpoints.api import api
-from movimentacao.exceptions.movimentacao_error import MovimentacaoError
+
+
+class MovimentacaoError(Exception):
+    pass
 
 
 def _error_400(request, exc):
