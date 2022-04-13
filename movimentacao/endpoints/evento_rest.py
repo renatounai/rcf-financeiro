@@ -1,10 +1,23 @@
-from http import HTTPStatus
-
-from ninja import Router
-
-from utils.api_utils import get_list_or_204
-from ..models.pessoa import Pessoa
-
+# from __future__ import annotations
+#
+# from datetime import datetime
+# from http import HTTPStatus
+# from typing import TYPE_CHECKING
+#
+# from django.shortcuts import get_object_or_404
+from ninja import Router, Schema
+# from pydantic import EmailStr
+#
+# from utils.api_utils import get_list_or_204
+# if TYPE_CHECKING:
+#     from ..models.evento import Evento
+#     from ..models.motivo_cancelamento import MotivoCancelamento
+#     from ..models.pessoa import Pessoa
+#     from ..models.status_evento import StatusEvento
+#     from ..models.tipo_evento import TipoEvento
+# from ..services import evento_service
+#
+#
 # class EventoOut(Schema):
 #     id: int
 #     agendado_para: datetime
@@ -24,7 +37,8 @@ from ..models.pessoa import Pessoa
 #     fone: str = None
 #     instagram_user: str = None
 #     facebook_user: str = None
-
+#
+#
 # class EventoIn(Schema):
 #     agendado_para: datetime = None
 #     valor_cobrado: float = None
@@ -38,34 +52,35 @@ from ..models.pessoa import Pessoa
 #     tipo_evento_descricao: str = None
 #     url_galeria: str = None
 #     gratuito: bool
-
-
-# @api.get("/eventos/{evento_id}", response=EventoOut)
+#
+#
+router = Router()
+#
+#
+# @router.get("/eventos/{evento_id}", response=EventoOut)
 # def find_by_id(_, evento_id: int):
 #     return EventoOut(get_object_or_404(Evento, id=evento_id))
-
-router = Router()
-
-
-@router.get("/", response={HTTPStatus.NO_CONTENT: None})
-def find_all(_):
-    return get_list_or_204(Pessoa.objects.all())
-
-
-# @api.post("/eventos", response={HTTPStatus.CREATED: EventoOut})
+#
+#
+# @router.get("/", response={HTTPStatus.NO_CONTENT: None})
+# def find_all(_):
+#     return get_list_or_204(Pessoa.objects.all())
+#
+#
+# @router.post("/eventos", response={HTTPStatus.CREATED: EventoOut})
 # def create_evento(_, payload: EventoIn):
 #     evento = Evento()
 #     evento_service.save_evento_in(payload)
 #     return evento
 #
 #
-# @api.put("/eventos/{evento_id}", response={HTTPStatus.OK: EventoOut})
+# @router.put("/eventos/{evento_id}", response={HTTPStatus.OK: EventoOut})
 # def update_evento(_, evento_id: int, payload: EventoIn):
 #     evento = get_object_or_404(Evento, id=evento_id)
 #     evento_service.save_evento_in(payload)
 #     return evento
 #
 #
-# @api.delete("/eventos/{evento_id}", response={HTTPStatus.OK: None})
+# @router.delete("/eventos/{evento_id}", response={HTTPStatus.OK: None})
 # def delete_evento(_, evento_id: int):
 #     get_object_or_404(Evento, id=evento_id).delete()

@@ -1,7 +1,11 @@
-from movimentacao.endpoints.evento_rest import EventoIn
-from movimentacao.models.evento import Evento
-from movimentacao.models.pessoa import Pessoa
-from movimentacao.models.tipo_evento import TipoEvento
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from movimentacao.endpoints.evento_rest import EventoIn
+    from movimentacao.models.evento import Evento
+    from movimentacao.models.pessoa import Pessoa
+    from movimentacao.models.tipo_evento import TipoEvento
 from movimentacao.services import tipo_evento_service, pessoa_service
 from utils.string_utils import is_not_empty
 
