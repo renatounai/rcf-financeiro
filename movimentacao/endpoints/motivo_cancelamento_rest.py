@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from typing import List
 
 from django.shortcuts import get_object_or_404
@@ -22,12 +23,12 @@ def find_by_id(_, motivo_cancelamento_id: int):
     return get_object_or_404(MotivoCancelamento, id=motivo_cancelamento_id)
 
 
-@api.get("/motivos_cancelamento", response={200: List[MotivoCancelamentoOut], 204: None})
+@api.get("/motivos_cancelamento", response={HTTPStatus.OK: List[MotivoCancelamentoOut], HTTPStatus.NO_CONTENT: None})
 def find_all(_):
     return get_list_or_204(MotivoCancelamento.objects.all())
 
 
-@api.post("/motivos_cancelamento", response={201: MotivoCancelamentoOut})
+@api.post("/motivos_cancelamento", response={HTTPStatus.CREATED: MotivoCancelamentoOut})
 def create_evento(_, payload: MotivoCancelamentoIn):
     motivo_cancelamento = MotivoCancelamento()
     dict_to_model(payload.dict(), motivo_cancelamento)
@@ -35,7 +36,7 @@ def create_evento(_, payload: MotivoCancelamentoIn):
     return motivo_cancelamento
 
 
-@api.put("/motivos_cancelamento/{motivo_cancelamento_id}", response={200: MotivoCancelamentoOut})
+@api.put("/motivos_cancelamento/{motivo_cancelamento_id}", response={HTTPStatus.OK: MotivoCancelamentoOut})
 def update_evento(_, motivo_cancelamento_id: int, payload: MotivoCancelamentoIn):
     motivo_cancelamento = get_object_or_404(MotivoCancelamento, id=motivo_cancelamento_id)
     dict_to_model(payload.dict(), motivo_cancelamento)
@@ -43,6 +44,6 @@ def update_evento(_, motivo_cancelamento_id: int, payload: MotivoCancelamentoIn)
     return motivo_cancelamento
 
 
-@api.delete("/motivos_cancelamento/{motivo_cancelamento_id}", response={200: None})
+@api.delete("/motivos_cancelamento/{motivo_cancelamento_id}", response={HTTPStatus.OK: None})
 def delete_evento(_, motivo_cancelamento_id: int):
     get_object_or_404(MotivoCancelamento, id=motivo_cancelamento_id).delete()

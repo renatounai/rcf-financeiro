@@ -1,5 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
+from http import HTTPStatus
 from typing import List
 
 from django.shortcuts import get_object_or_404
@@ -58,13 +59,13 @@ def find_by_id(_, evento_id: int):
     return EventoOut(get_object_or_404(Evento, id=evento_id))
 
 
-@api.get("/eventos", response={200: List[EventoOut], 204: None})
+@api.get("/eventos", response={HTTPStatus.OK: List[EventoOut], HTTPStatus.NO_CONTENT: None})
 def find_all(_):
     eventos = map(EventoOut, Evento.objects.all())
     return get_list_or_204(eventos)
 
 
-@api.post("/eventos", response={201: EventoOut})
+@api.post("/eventos", response={HTTPStatus.CREATED: EventoOut})
 def create_evento(_, payload: EventoIn):
     evento = Evento()
     dict_to_model(payload.dict(), evento)
@@ -72,7 +73,7 @@ def create_evento(_, payload: EventoIn):
     return evento
 
 
-@api.put("/eventos/{evento_id}", response={200: EventoOut})
+@api.put("/eventos/{evento_id}", response={HTTPStatus.OK: EventoOut})
 def update_evento(_, evento_id: int, payload: EventoIn):
     evento = get_object_or_404(Evento, id=evento_id)
     dict_to_model(payload.dict(), evento)
@@ -80,6 +81,6 @@ def update_evento(_, evento_id: int, payload: EventoIn):
     return evento
 
 
-@api.delete("/eventos/{evento_id}", response={200: None})
+@api.delete("/eventos/{evento_id}", response={HTTPStatus.OK: None})
 def delete_evento(_, evento_id: int):
     get_object_or_404(Evento, id=evento_id).delete()

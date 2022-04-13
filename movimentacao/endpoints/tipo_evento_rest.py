@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from typing import List
 
 from django.shortcuts import get_object_or_404
@@ -22,19 +23,19 @@ def find_by_id(_, tipo_evento_id: int):
     return get_object_or_404(TipoEvento, id=tipo_evento_id)
 
 
-@api.get("/tipos_evento", response={200: List[TipoEventoOut], 204: None})
+@api.get("/tipos_evento", response={HTTPStatus.OK: List[TipoEventoOut], HTTPStatus.NO_CONTENT: None})
 def find_all(_):
     return get_list_or_204(TipoEvento.objects.all())
 
 
-@api.post("/tipos_evento", response={201: TipoEventoOut})
+@api.post("/tipos_evento", response={HTTPStatus.CREATED: TipoEventoOut})
 def create_evento(_, payload: TipoEventoIn):
     tipo_evento = TipoEvento(descricao=payload.descricao)
     tipo_evento_service.save(tipo_evento)
     return tipo_evento
 
 
-@api.put("/tipos_evento/{tipo_evento_id}", response={200: TipoEventoOut})
+@api.put("/tipos_evento/{tipo_evento_id}", response={HTTPStatus.OK: TipoEventoOut})
 def update_evento(_, tipo_evento_id: int, payload: TipoEventoIn):
     tipo_evento = get_object_or_404(TipoEvento, id=tipo_evento_id)
     tipo_evento.descricao = payload.descricao
@@ -42,6 +43,6 @@ def update_evento(_, tipo_evento_id: int, payload: TipoEventoIn):
     return tipo_evento
 
 
-@api.delete("/tipos_evento/{tipo_evento_id}", response={200: None})
+@api.delete("/tipos_evento/{tipo_evento_id}", response={HTTPStatus.OK: None})
 def delete_evento(_, tipo_evento_id: int):
     get_object_or_404(TipoEvento, id=tipo_evento_id).delete()
