@@ -1,5 +1,5 @@
 def is_not_empty(text: str):
-    return text and not text.strip()
+    return text and text.strip()
 
 
 def is_empty(text: str):

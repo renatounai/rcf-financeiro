@@ -29,3 +29,19 @@ class EventoTest(TestCase):
 
         response = self.client.post("/api/eventos/", evento_in, content_type=APPLICATION_JSON)
         self.assertEqual(response.status_code, 201)
+
+    def test_should_create_an_evento_with_only_cliente_name(self):
+        tipo_evento = TipoEvento(descricao="Boudoir")
+        tipo_evento.save()
+
+        evento_in = {
+            "quitado": False,
+            "status": StatusEvento.NEGOCIANDO,
+            "gratuito": False,
+            "cliente_nome": "Renato",
+            "tipo_evento_id": tipo_evento.id
+        }
+
+        response = self.client.post("/api/eventos/", evento_in, content_type=APPLICATION_JSON)
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue('Renato', response.json()["cliente"]["nome"])
