@@ -1,6 +1,5 @@
 from django.db import models
 
-from movimentacao.messages import PESSOA_NOME_OBRIGATORIO
 from movimentacao.models.base import BaseModel
 
 
@@ -12,11 +11,6 @@ class Pessoa(BaseModel):
     facebook_user = models.CharField(max_length=100, null=True, blank=True)
 
     def clean(self):
-        from movimentacao.exceptions.handler import MovimentacaoError
-
-        if not self.nome or not self.nome.strip():
-            raise MovimentacaoError(PESSOA_NOME_OBRIGATORIO)
-
         # remove both the domain and the query string
         if self.instagram_user:
             user = self.instagram_user.split("/")

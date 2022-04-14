@@ -1,52 +1,45 @@
 from datetime import datetime
-from typing import TYPE_CHECKING
 
 from django.db import models
+from django.shortcuts import get_object_or_404
 
-from movimentacao.messages import EVENTO_CLIENTE_OBRIGATORIO, EVENTO_TIPO_EVENTO_OBRIGATORIO, EVENTO_STATUS_OBRIGATORIO
 from movimentacao.models.base import BaseModel
 from movimentacao.models.motivo_cancelamento import MotivoCancelamento
 from movimentacao.models.pessoa import Pessoa
 from movimentacao.models.status_evento import StatusEvento
 from movimentacao.models.tipo_evento import TipoEvento
+from utils.string_utils import is_empty
 
 
 class Evento(BaseModel):
-    agendado_para = models.DateTimeField(null=True)
-    valor_cobrado = models.DecimalField(max_digits=9, decimal_places=2, null=True)
+    agendado_para = models.DateTimeField(null=True, blank=True)
+    valor_cobrado = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
     quitado = models.BooleanField(default=False)
     status = models.IntegerField(choices=StatusEvento.choices, default=StatusEvento.NEGOCIANDO)
-    motivo_cancelamento = models.ForeignKey(MotivoCancelamento, on_delete=models.PROTECT, null=True)
+    motivo_cancelamento = models.ForeignKey(MotivoCancelamento, on_delete=models.PROTECT, null=True, blank=True)
     cliente = models.ForeignKey(Pessoa, on_delete=models.CASCADE)
     tipo_evento = models.ForeignKey(TipoEvento, on_delete=models.PROTECT)
-    url_galeria = models.URLField()
+    url_galeria = models.URLField(null=True, blank=True)
     gratuito = models.BooleanField(default=False)
 
-    def __init__(self, evento = None, *args, **kwargs):
+    def __init__(self, evento=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         if not evento:
             return
 
-        # self.agendado_para = evento.agendado_para
-        # self.valor_cobrado = evento.valor_cobrado
-        # self.quitado = evento.quitado
-        # self.status = evento.status
-        # self.url_galeria = evento.url_galeria
-        # self.gratuito = evento.gratuito
+        self.agendado_para = evento.agendado_para
+        self.valor_cobrado = evento.valor_cobrado
+        self.quitado = evento.quitado
+        self.status = evento.status
+        self.url_galeria = evento.url_galeria
+        self.gratuito = evento.gratuito
+        if evento.tipo_evento_id:
+            self.tipo_evento = get_object_or_404(TipoEvento, id=evento.tipo_evento_id)
+        if evento.cliente_id:
+            self.cliente = get_object_or_404(Pessoa, id=evento.cliente_id)
 
     def clean(self):
-        from movimentacao.exceptions.handler import MovimentacaoError
-
-        # if not self.cliente:
-        #     raise MovimentacaoError(EVENTO_CLIENTE_OBRIGATORIO)
-        #
-        # if not self.tipo_evento:
-        #     raise MovimentacaoError(EVENTO_TIPO_EVENTO_OBRIGATORIO)
-        #
-        # if not self.status:
-        #     raise MovimentacaoError(EVENTO_STATUS_OBRIGATORIO)
-
         if self.gratuito:
             self.valor_cobrado = 0
 

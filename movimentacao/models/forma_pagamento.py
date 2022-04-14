@@ -1,14 +1,10 @@
 from django.db import models
 
-from movimentacao.messages import FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA, FORMA_PAGAMENTO_DESCRICAO_REPETIDA
 from movimentacao.models.base import BaseModel
 
 
 class FormaPagamento(BaseModel):
     descricao = models.CharField(max_length=30, blank=False, unique=True, null=False)
-
-    def clean(self):
-        self._validate_description(FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA, FORMA_PAGAMENTO_DESCRICAO_REPETIDA)
 
     def __str__(self):
         return self.descricao

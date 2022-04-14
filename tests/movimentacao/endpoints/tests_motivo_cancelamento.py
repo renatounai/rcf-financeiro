@@ -1,8 +1,8 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
+from ninja.errors import ValidationError
 
 from movimentacao.endpoints.motivo_cancelamento_rest import MotivoCancelamentoIn
-from movimentacao.exceptions.handler import MovimentacaoError
 from movimentacao.messages import TIPO_EVENTO_DESCRICAO_REPETIDA, \
     MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO
 from movimentacao.models.motivo_cancelamento import MotivoCancelamento
@@ -48,17 +48,17 @@ class MotivoCancelamentoTest(TestCase):
 
     def test_shoud_raise_error_when_missing_description(self):
         response = self.client.post("/api/motivos_cancelamento/", {"descricao": ""}, content_type="application/json")
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()["message"], MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO)
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.json()["detail"], MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO)
 
     def test_shoud_raise_error_when_description_is_white_space(self):
         response = self.client.post("/api/motivos_cancelamento/", {"descricao": "    "}, content_type="application/json")
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()["message"], MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO)
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.json()["detail"], MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO)
 
     def test_shoud_raise_error_when_description_is_null(self):
         response = self.client.post("/api/motivos_cancelamento/", {"descricao": None}, content_type="application/json")
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 422)
 
     def test_shoud_update_a_forma_de_pagamento(self):
         motivo_cancelamento = MotivoCancelamento.objects.create(descricao="Não tem dinheiro")
@@ -90,5 +90,5 @@ class MotivoCancelamentoTest(TestCase):
 
     def test_repeated_description(self):
         MotivoCancelamento.objects.create(descricao="Sem dinheiro")
-        with self.assertRaises(MovimentacaoError, msg=TIPO_EVENTO_DESCRICAO_REPETIDA):
+        with self.assertRaises(ValidationError, msg=TIPO_EVENTO_DESCRICAO_REPETIDA):
             motivo_cancelamento_service.save(MotivoCancelamento(descricao="Sem dinheiro"))

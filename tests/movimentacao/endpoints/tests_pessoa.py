@@ -77,7 +77,7 @@ class PessoaTest(TestCase):
     def test_should_raise_error_if_email_is_invalid(self):
         pessoa = {"nome": "Renato", "email": "renato"}
         response = self.client.post("/api/pessoas/", pessoa, content_type=APPLICATION_JSON)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 422)
 
     def test_shoud_remove_domain_from_social_media_ids_without_query_string(self):
         pessoa = PessoaIn(nome="Renato",
