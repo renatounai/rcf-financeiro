@@ -38,10 +38,16 @@ class Evento(BaseModel):
             self.tipo_evento = get_object_or_404(TipoEvento, id=evento.tipo_evento_id)
         if evento.cliente_id:
             self.cliente = get_object_or_404(Pessoa, id=evento.cliente_id)
+        if evento.motivo_cancelamento_id:
+            self.motivo_cancelamento = get_object_or_404(MotivoCancelamento, id=evento.motivo_cancelamento_id)
 
     def clean(self):
         if self.gratuito:
             self.valor_cobrado = 0
+
+    @property
+    def is_cancelado(self):
+        return self.status == StatusEvento.CANCELADO
 
     def agendar_para(self, horario_realizacao: datetime):
         if horario_realizacao is None:

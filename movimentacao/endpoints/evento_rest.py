@@ -35,6 +35,8 @@ class EventoIn(Schema):
     cliente_nome: str = None
     tipo_evento_id: int = None
     tipo_evento_descricao: str = None
+    motivo_cancelamento_id: int = None
+    motivo_cancelamento_descricao: str = None
     agendado_para: datetime = None
     url_galeria: str = None
 

@@ -9,3 +9,5 @@ TIPO_EVENTO_DESCRICAO_OBRIGATORIO = "A descrição do tipo de evento é obrigat�
 PESSOA_NOME_OBRIGATORIO = "O nome da pessoa é obrigatório!"
 MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO = "A descrição do motivo de cancelamento é obrigatória!"
 MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA = "Ja existe um motivo de cancelamento com esta descriçao!"
+EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELADO = "Não é possível informar o motivo de cancelamento quando o " \
+                                                      "evento não está cancelado! "
