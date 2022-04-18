@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from movimentacao.messages import EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELADO
+from movimentacao.models.evento import Evento
 from movimentacao.models.motivo_cancelamento import MotivoCancelamento
 from movimentacao.models.pessoa import Pessoa
 from movimentacao.models.status_evento import StatusEvento
@@ -86,3 +87,39 @@ class EventoTest(TestCase):
         response = self.client.post("/api/eventos/", evento_in, content_type=APPLICATION_JSON)
         self.assertEqual(response.status_code, 422)
         self.assertEqual(response.json()['detail'], EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELADO)
+
+    def test_deve_cancelar_evento(self):
+        evento = Evento(quitado=False, status=StatusEvento.NEGOCIANDO, gratuito=False,
+                        cliente=Pessoa.objects.create(nome="Renato"),
+                        tipo_evento=TipoEvento.objects.create(descricao="Boudoir"))
+        evento.save()
+
+        cancelamento_in = {
+            "motivo_cancelamento_id": None,
+            "motivo_cancelamento_descricao": "Falta de dinheiro"
+        }
+
+        response = self.client.put(f"/api/eventos/cancelar/{evento.id}", cancelamento_in, content_type=APPLICATION_JSON)
+        self.assertEqual(response.status_code, 200)
+        evento = Evento.objects.get(id=evento.id)
+        self.assertTrue(StatusEvento.CANCELADO, evento.status)
+
+    def test_deve_cancelar_evento_with_motivo_cancelamento(self):
+        evento = Evento(quitado=False, status=StatusEvento.NEGOCIANDO, gratuito=False,
+                        cliente=Pessoa.objects.create(nome="Renato"),
+                        tipo_evento=TipoEvento.objects.create(descricao="Boudoir"))
+        evento.save()
+
+        motivo_cancelamento = MotivoCancelamento(descricao="Falta de dinheiro")
+        motivo_cancelamento.save()
+
+        cancelamento_in = {
+            "motivo_cancelamento_id": motivo_cancelamento.id,
+            "motivo_cancelamento_descricao": None
+        }
+
+        response = self.client.put(f"/api/eventos/cancelar/{evento.id}", cancelamento_in, content_type=APPLICATION_JSON)
+        self.assertEqual(response.status_code, 200)
+        evento = Evento.objects.get(id=evento.id)
+        self.assertTrue(StatusEvento.CANCELADO, evento.status)
+

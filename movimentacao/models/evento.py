@@ -21,31 +21,32 @@ class Evento(BaseModel):
     url_galeria = models.URLField(null=True, blank=True)
     gratuito = models.BooleanField(default=False)
 
-    def __init__(self, evento=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    @staticmethod
+    def from_evento_in(evento_in):
+        evento = Evento(
+            agendado_para=evento_in.agendado_para,
+            valor_cobrado=evento_in.valor_cobrado,
+            quitado=evento_in.quitado,
+            status=evento_in.status,
+            url_galeria=evento_in.url_galeria,
+            gratuito=evento_in.gratuito
+        )
 
-        if not evento:
-            return
+        if evento_in.tipo_evento_id:
+            evento.tipo_evento = get_object_or_404(TipoEvento, id=evento_in.tipo_evento_id)
+        if evento_in.cliente_id:
+            evento.cliente = get_object_or_404(Pessoa, id=evento_in.cliente_id)
+        if evento_in.motivo_cancelamento_id:
+            evento.motivo_cancelamento = get_object_or_404(MotivoCancelamento, id=evento_in.motivo_cancelamento_id)
 
-        self.agendado_para = evento.agendado_para
-        self.valor_cobrado = evento.valor_cobrado
-        self.quitado = evento.quitado
-        self.status = evento.status
-        self.url_galeria = evento.url_galeria
-        self.gratuito = evento.gratuito
-        if evento.tipo_evento_id:
-            self.tipo_evento = get_object_or_404(TipoEvento, id=evento.tipo_evento_id)
-        if evento.cliente_id:
-            self.cliente = get_object_or_404(Pessoa, id=evento.cliente_id)
-        if evento.motivo_cancelamento_id:
-            self.motivo_cancelamento = get_object_or_404(MotivoCancelamento, id=evento.motivo_cancelamento_id)
+        return evento
 
     def clean(self):
         if self.gratuito:
             self.valor_cobrado = 0
 
     @property
-    def is_cancelado(self):
+    def is_cancelado(self) -> bool:
         return self.status == StatusEvento.CANCELADO
 
     def agendar_para(self, horario_realizacao: datetime):
