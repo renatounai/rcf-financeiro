@@ -1,15 +1,14 @@
 from django.db.models import Manager
 from ninja.errors import ValidationError
+from typing_extensions import Protocol
 
-from movimentacao.exceptions.MovimentacaoError import MovimentacaoError
 from utils.string_utils import is_empty
 
 
-class ObjectWithDescription:
+class ObjectWithDescription(Protocol):
     objects: Manager
 
-    def __init__(self, descricao: str, pk: int, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, descricao: str, pk: int):
         self.descricao = descricao
         self.id = pk
 
