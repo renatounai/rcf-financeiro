@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ninja.errors import ValidationError
+
 from movimentacao.messages import EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELADO
 from movimentacao.models.evento import Evento
 from movimentacao.models.motivo_cancelamento import MotivoCancelamento
@@ -38,7 +40,7 @@ def save_evento_in(evento_in: EventoIn):
         evento.motivo_cancelamento = motivo_cancelamento
 
     if not evento.is_cancelado and evento.motivo_cancelamento_id:
-        raise ValueError(EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELADO)
+        raise ValidationError(EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELADO)
 
     save(evento)
     return evento

@@ -8,7 +8,6 @@ from movimentacao.models.motivo_cancelamento import MotivoCancelamento
 from movimentacao.models.pessoa import Pessoa
 from movimentacao.models.status_evento import StatusEvento
 from movimentacao.models.tipo_evento import TipoEvento
-from utils.string_utils import is_empty
 
 
 class Evento(BaseModel):

@@ -1,8 +1,7 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
-from movimentacao.endpoints.pessoa_rest import PessoaIn
-from movimentacao.models.evento import Evento
+from movimentacao.messages import EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELADO
+from movimentacao.models.motivo_cancelamento import MotivoCancelamento
 from movimentacao.models.pessoa import Pessoa
 from movimentacao.models.status_evento import StatusEvento
 from movimentacao.models.tipo_evento import TipoEvento
@@ -65,5 +64,25 @@ class EventoTest(TestCase):
         response = self.client.post("/api/eventos/", evento_in, content_type=APPLICATION_JSON)
         self.assertEqual(response.status_code, 201)
 
-    def deve_lancar_erro_ao_informar_motivo_cancelamento_quando_nao_cancelado(self):
-        pass
+    def test_deve_lancar_erro_ao_informar_motivo_cancelamento_quando_nao_cancelado(self):
+        pessoa = Pessoa(nome="Renato")
+        pessoa.save()
+
+        tipo_evento = TipoEvento(descricao="Boudoir")
+        tipo_evento.save()
+
+        motivo_cancelamento = MotivoCancelamento(descricao="Não tem dinheiro")
+        motivo_cancelamento.save()
+
+        evento_in = {
+            "quitado": False,
+            "status": StatusEvento.NEGOCIANDO,
+            "gratuito": False,
+            "cliente_id": pessoa.id,
+            "tipo_evento_id": tipo_evento.id,
+            "motivo_cancelamento_id": motivo_cancelamento.id
+        }
+
+        response = self.client.post("/api/eventos/", evento_in, content_type=APPLICATION_JSON)
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.json()['detail'], EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELADO)
