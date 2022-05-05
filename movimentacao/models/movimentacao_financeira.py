@@ -1,13 +1,13 @@
 from django.db import models
 
 from movimentacao.models.base import BaseModel
-#from movimentacao.models.evento import Evento
 from movimentacao.models.forma_pagamento import FormaPagamento
+from movimentacao.models.evento import Evento
 from movimentacao.models.tipo_lancamento import TipoLancamento
 
 
 class MovimentacaoFinanceira(BaseModel):
-    # evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
     forma_pagamento = models.ForeignKey(FormaPagamento, on_delete=models.PROTECT)
     valor = models.DecimalField(max_digits=9, decimal_places=2)
     data_lancamento = models.DateTimeField(auto_now=True)
