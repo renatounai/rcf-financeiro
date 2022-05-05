@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING, Protocol
 from django.shortcuts import get_object_or_404
 from ninja.errors import ValidationError
 
-if TYPE_CHECKING:
-    from movimentacao.endpoints.motivo_cancelamento_rest import MotivoCancelamentoIn
 from movimentacao.messages import EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELADO
 from movimentacao.models.evento import Evento
 from movimentacao.models.motivo_cancelamento import MotivoCancelamento
@@ -15,7 +13,7 @@ from movimentacao.models.status_evento import StatusEvento
 from movimentacao.models.tipo_evento import TipoEvento
 
 if TYPE_CHECKING:
-    from movimentacao.endpoints.evento_rest import EventoIn, CancelamentoIn
+    from movimentacao.endpoints.evento_rest import EventoIn
 from movimentacao.services import tipo_evento_service, pessoa_service, motivo_cancelamento_service
 from utils.string_utils import is_not_empty
 
