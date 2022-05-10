@@ -4,7 +4,7 @@ from ninja.errors import ValidationError
 
 from movimentacao.endpoints.motivo_cancelamento_rest import MotivoCancelamentoIn
 from movimentacao.messages import TIPO_EVENTO_DESCRICAO_REPETIDA, \
-    MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO
+    MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO, MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA
 from movimentacao.models.motivo_cancelamento import MotivoCancelamento
 from movimentacao.services import motivo_cancelamento_service
 
@@ -90,5 +90,13 @@ class MotivoCancelamentoTest(TestCase):
 
     def test_repeated_description(self):
         MotivoCancelamento.objects.create(descricao="Sem dinheiro")
-        with self.assertRaises(ValidationError, msg=TIPO_EVENTO_DESCRICAO_REPETIDA):
+        with self.assertRaises(ValidationError, msg=MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA):
             motivo_cancelamento_service.save(MotivoCancelamento(descricao="Sem dinheiro"))
+
+    def test_repeated_description_on_update(self):
+        MotivoCancelamento.objects.create(descricao="Sem dinheiro")
+        viajou = MotivoCancelamento.objects.create(descricao="Viajou")
+
+        with self.assertRaises(ValidationError, msg=MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA):
+            viajou.descricao = "Sem dinheiro"
+            motivo_cancelamento_service.save(viajou)

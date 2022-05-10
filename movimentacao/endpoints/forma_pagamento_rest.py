@@ -26,9 +26,9 @@ def find_by_id(_, forma_pagamento_id: int):
     return get_object_or_404(FormaPagamento, id=forma_pagamento_id)
 
 
-@router.get("/", response={HTTPStatus.OK: List[FormaPagamentoOut], HTTPStatus.NO_CONTENT: None})
+@router.get("/", response={HTTPStatus.OK: List[FormaPagamentoOut]})
 def find_all(_):
-    return get_list_or_204(FormaPagamento.objects.all())
+    return FormaPagamento.objects.all()
 
 
 @router.post("/", response={HTTPStatus.CREATED: FormaPagamentoOut})

@@ -25,9 +25,10 @@ class FormaPagamentoTest(TestCase):
         self.assertEqual(formas[0]["descricao"], "Pix")
         self.assertEqual(formas[1]["descricao"], "Dinheiro")
 
-    def test_shoud_return_204_if_nothing_found(self):
+    def test_shoud_return_empty_if_nothing_found(self):
         response = self.client.get("/api/formas_pagamento/")
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
 
     def test_shoud_get_a_forma_de_pagamento(self):
         forma_pagamento = FormaPagamento.objects.create(descricao="Pix")
@@ -53,7 +54,6 @@ class FormaPagamentoTest(TestCase):
     def test_shoud_raise_error_when_description_is_white_space(self):
         response = self.client.post("/api/formas_pagamento/", {"descricao": "     "}, content_type="application/json")
         self.assertEqual(422, response.status_code)
-        # self.assertContains(response, "A descrição da forma de pagamento é obrigatória", status_code=400)
 
     def test_shoud_raise_error_when_description_is_null(self):
         response = self.client.post("/api/formas_pagamento/", {"descricao": None}, content_type="application/json")
@@ -91,3 +91,11 @@ class FormaPagamentoTest(TestCase):
         FormaPagamento.objects.create(descricao="Pix")
         with self.assertRaises(ValidationError, msg=FORMA_PAGAMENTO_DESCRICAO_REPETIDA):
             forma_pagamento_service.save(FormaPagamento(descricao="Pix"))
+
+    def test_repeated_description_on_update(self):
+        FormaPagamento.objects.create(descricao="Pix")
+        dinheiro = FormaPagamento.objects.create(descricao="Dinheiro")
+
+        with self.assertRaises(ValidationError, msg=FORMA_PAGAMENTO_DESCRICAO_REPETIDA):
+            dinheiro.descricao = "Pix"
+            forma_pagamento_service.save(dinheiro)

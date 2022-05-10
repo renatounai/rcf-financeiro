@@ -92,3 +92,12 @@ class TipoEventoTest(TestCase):
         TipoEvento.objects.create(descricao="Boudoir")
         with self.assertRaises(ValidationError, msg=TIPO_EVENTO_DESCRICAO_REPETIDA):
             tipo_evento_service.save(TipoEvento(descricao="Boudoir"))
+
+    def test_repeated_description_on_update(self):
+        TipoEvento.objects.create(descricao="Boudoir")
+        gestante = TipoEvento.objects.create(descricao="Gestante")
+
+        with self.assertRaises(ValidationError, msg=TIPO_EVENTO_DESCRICAO_REPETIDA):
+            gestante.descricao = "Boudoir"
+            tipo_evento_service.save(gestante)
+

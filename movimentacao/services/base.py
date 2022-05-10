@@ -17,8 +17,9 @@ def validate_description(object_with_description: ObjectWithDescription, msg_obr
     if is_empty(object_with_description.descricao):
         raise ValidationError(msg_obrigatorio)
 
-    if not object_with_description.id:
-        manager = object_with_description.__class__.objects
-        exists = manager.filter(descricao__iexact=object_with_description.descricao).exists()
-        if exists:
-            raise ValidationError(msg_repeated)
+    manager = object_with_description.__class__.objects
+    exists = manager.filter(descricao__iexact=object_with_description.descricao)\
+        .exclude(id=object_with_description.id)\
+        .exists()
+    if exists:
+        raise ValidationError(msg_repeated)
