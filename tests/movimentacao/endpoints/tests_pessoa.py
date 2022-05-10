@@ -22,9 +22,10 @@ class PessoaTest(TestCase):
         self.assertEqual(formas[0]["nome"], "Renato")
         self.assertEqual(formas[1]["nome"], "Ellen")
 
-    def test_shoud_return_204_if_nothing_found(self):
+    def test_shoud_return_empty_if_nothing_found(self):
         response = self.client.get("/api/pessoas/")
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
 
     def test_shoud_get_a_pessoa_only_name(self):
         pessoa = Pessoa.objects.create(nome="Renato")

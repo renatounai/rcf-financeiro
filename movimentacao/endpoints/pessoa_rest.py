@@ -37,7 +37,7 @@ def find_by_id(_, pessoa_id: int):
 
 @router.get("/", response={HTTPStatus.OK: List[PessoaOut], HTTPStatus.NO_CONTENT: None})
 def find_all(_):
-    return get_list_or_204(Pessoa.objects.all())
+    return Pessoa.objects.all()
 
 
 @router.post("/", response={HTTPStatus.CREATED: PessoaOut})

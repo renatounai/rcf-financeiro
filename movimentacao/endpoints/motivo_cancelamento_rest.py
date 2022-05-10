@@ -28,7 +28,7 @@ def find_by_id(_, motivo_cancelamento_id: int):
 
 @router.get("/", response={HTTPStatus.OK: List[MotivoCancelamentoOut], HTTPStatus.NO_CONTENT: None})
 def find_all(_):
-    return get_list_or_204(MotivoCancelamento.objects.all())
+    return MotivoCancelamento.objects.all()
 
 
 @router.post("/", response={HTTPStatus.CREATED: MotivoCancelamentoOut})

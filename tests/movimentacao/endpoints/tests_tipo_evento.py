@@ -26,9 +26,10 @@ class TipoEventoTest(TestCase):
         self.assertEqual(formas[0]["descricao"], "Boudoir")
         self.assertEqual(formas[1]["descricao"], "Gestante")
 
-    def test_shoud_return_204_if_nothing_found(self):
+    def test_shoud_return_empty_if_nothing_found(self):
         response = self.client.get("/api/tipos_evento/")
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
 
     def test_shoud_get_a_tipo_de_evento(self):
         tipo_evento = TipoEvento.objects.create(descricao="Boudoir")

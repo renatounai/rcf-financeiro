@@ -26,9 +26,10 @@ class MotivoCancelamentoTest(TestCase):
         self.assertEqual(formas[0]["descricao"], "Não tem dinheiro")
         self.assertEqual(formas[1]["descricao"], "Não gostou das fotos")
 
-    def test_shoud_return_204_if_nothing_found(self):
+    def test_shoud_return_empty_if_nothing_found(self):
         response = self.client.get("/api/motivos_cancelamento/")
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
 
     def test_shoud_get_a_tipo_de_evento(self):
         motivo_cancelamento = MotivoCancelamento.objects.create(descricao="Não tem dinheiro")

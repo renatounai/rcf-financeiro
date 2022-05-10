@@ -37,7 +37,7 @@ def find_by_id(_, movimentacao_financeira_id: int):
 
 @router.get("/", response={HTTPStatus.OK: List[MovimentacaoFinanceiraOut], HTTPStatus.NO_CONTENT: None})
 def find_all(_):
-    return get_list_or_204(MovimentacaoFinanceira.objects.all())
+    return MovimentacaoFinanceira.objects.all()
 
 
 @router.post("/", response={HTTPStatus.CREATED: MovimentacaoFinanceiraOut})

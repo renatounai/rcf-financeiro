@@ -28,7 +28,7 @@ def find_by_id(_, tipo_evento_id: int):
 
 @router.get("/", response={HTTPStatus.OK: List[TipoEventoOut], HTTPStatus.NO_CONTENT: None})
 def find_all(_):
-    return get_list_or_204(TipoEvento.objects.all())
+    return TipoEvento.objects.all()
 
 
 @router.post("/", response={HTTPStatus.CREATED: TipoEventoOut})
