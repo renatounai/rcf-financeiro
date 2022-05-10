@@ -131,4 +131,3 @@ class MovimentacaoFinanceiraTest(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(MovimentacaoFinanceira.objects.count(), 1)
         self.assertEqual(response.json()["data_lancamento"], data_lancamento.isoformat())
-        print(response.json())
