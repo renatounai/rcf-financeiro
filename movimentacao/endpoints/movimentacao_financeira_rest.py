@@ -25,6 +25,7 @@ class MovimentacaoFinanceiraIn(Schema):
     forma_pagamento_id: int
     valor: float
     tipo_lancamento: TipoLancamento
+    data_lancamento: datetime.datetime = None
 
 
 router = Router()

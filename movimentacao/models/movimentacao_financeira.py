@@ -10,7 +10,7 @@ class MovimentacaoFinanceira(BaseModel):
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
     forma_pagamento = models.ForeignKey(FormaPagamento, on_delete=models.PROTECT)
     valor = models.DecimalField(max_digits=9, decimal_places=2)
-    data_lancamento = models.DateTimeField(auto_now=True)
+    data_lancamento = models.DateTimeField()
     tipo_lancamento = models.CharField(max_length=1, choices=TipoLancamento.choices, default=TipoLancamento.CREDITO)
 
     def __str__(self):

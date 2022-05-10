@@ -1,7 +1,9 @@
 from datetime import datetime
+from time import timezone
 
 from django.test import TestCase
 
+from movimentacao.endpoints.movimentacao_financeira_rest import MovimentacaoFinanceiraIn
 from movimentacao.models.evento import Evento
 from movimentacao.models.forma_pagamento import FormaPagamento
 from movimentacao.models.movimentacao_financeira import MovimentacaoFinanceira
@@ -33,18 +35,21 @@ class MovimentacaoFinanceiraTest(TestCase):
 
     def test_should_get_all_movimentacao_financeiras(self):
 
+        now = datetime.now()
         MovimentacaoFinanceira.objects.create(
             evento=MovimentacaoFinanceiraTest.evento,
             forma_pagamento=MovimentacaoFinanceiraTest.pix,
             valor=150.85,
-            tipo_lancamento=TipoLancamento.CREDITO
+            tipo_lancamento=TipoLancamento.CREDITO,
+            data_lancamento=now
         )
 
         MovimentacaoFinanceira.objects.create(
             evento=MovimentacaoFinanceiraTest.evento,
             forma_pagamento=MovimentacaoFinanceiraTest.pix,
             valor=30.40,
-            tipo_lancamento=TipoLancamento.DEBITO
+            tipo_lancamento=TipoLancamento.DEBITO,
+            data_lancamento=now
         )
 
         response = self.client.get("/api/movimentacoes_financeiras/")
@@ -66,3 +71,64 @@ class MovimentacaoFinanceiraTest(TestCase):
         self.assertEqual(formas[1]["tipo_lancamento"], TipoLancamento.DEBITO)
         data_lancamento = datetime.strptime(formas[1]["data_lancamento"], JSON_DATETIME_FORMAT)
         self.assertEqual(data_lancamento.date(), datetime.today().date())
+
+    def test_shoud_return_empty_if_nothing_found(self):
+        response = self.client.get("/api/movimentacoes_financeiras/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_shoud_get_a_movimentacao_financeira(self):
+        movimentacao_financeira = MovimentacaoFinanceira.objects.create(
+            evento=MovimentacaoFinanceiraTest.evento,
+            forma_pagamento=MovimentacaoFinanceiraTest.pix,
+            valor=200.0,
+            tipo_lancamento=TipoLancamento.CREDITO,
+            data_lancamento=datetime.now()
+        )
+
+        response = self.client.get(f"/api/movimentacoes_financeiras/{movimentacao_financeira.id}")
+
+        movimentacao_financeira_json = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(movimentacao_financeira_json["evento_id"], movimentacao_financeira.id)
+        self.assertEqual(movimentacao_financeira_json["forma_pagamento_id"], MovimentacaoFinanceiraTest.pix.id)
+        self.assertEqual(movimentacao_financeira_json["valor"], 200.0)
+        self.assertEqual(movimentacao_financeira_json["tipo_lancamento"], TipoLancamento.CREDITO)
+        data_lancamento = datetime.strptime(movimentacao_financeira_json["data_lancamento"], JSON_DATETIME_FORMAT)
+        self.assertEqual(data_lancamento.date(), datetime.today().date())
+
+    def test_should_create_a_movimentacao_financeira_sem_data(self):
+        movimentacao_financeira_credito_sem_data_lancamento = MovimentacaoFinanceiraIn(
+            evento_id=MovimentacaoFinanceiraTest.evento.id,
+            forma_pagamento_id=MovimentacaoFinanceiraTest.pix.id,
+            tipo_lancamento=TipoLancamento.CREDITO,
+            valor=250.0
+        )
+
+        response = self.client.post(
+            "/api/movimentacoes_financeiras/",
+            movimentacao_financeira_credito_sem_data_lancamento.__dict__,
+            content_type="application/json")
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(MovimentacaoFinanceira.objects.count(), 1)
+
+    def test_should_create_a_movimentacao_financeira_com_data(self):
+        data_lancamento = datetime(2022, 5, 10, 11, 50, 30, 0)
+        movimentacao_financeira_credito_sem_data_lancamento = MovimentacaoFinanceiraIn(
+            evento_id=MovimentacaoFinanceiraTest.evento.id,
+            forma_pagamento_id=MovimentacaoFinanceiraTest.pix.id,
+            tipo_lancamento=TipoLancamento.CREDITO,
+            valor=250.0,
+            data_lancamento=data_lancamento
+        )
+
+        response = self.client.post(
+            "/api/movimentacoes_financeiras/",
+            movimentacao_financeira_credito_sem_data_lancamento.__dict__,
+            content_type="application/json")
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(MovimentacaoFinanceira.objects.count(), 1)
+        self.assertEqual(response.json()["data_lancamento"], data_lancamento.isoformat())
+        print(response.json())

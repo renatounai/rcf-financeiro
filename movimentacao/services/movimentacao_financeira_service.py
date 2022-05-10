@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from ninja.errors import ValidationError
 
 from movimentacao.models.movimentacao_financeira import MovimentacaoFinanceira
@@ -26,6 +28,9 @@ def save(movimentacao_financeira: MovimentacaoFinanceira):
 
     if not movimentacao_financeira.tipo_lancamento:
         raise ValidationError(MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_OBRIGATORIO)
+
+    if not movimentacao_financeira.data_lancamento:
+        movimentacao_financeira.data_lancamento = datetime.now()
 
     movimentacao_financeira.full_clean()
     movimentacao_financeira.save()
