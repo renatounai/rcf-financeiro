@@ -17,7 +17,7 @@ APPLICATION_JSON = "application/json"
 class MovimentacaoFinanceiraTest(TestCase):
 
     @classmethod
-    def setUpClass(cls):
+    def setUpTestData(cls):
         pessoa = Pessoa(nome="Renato")
         pessoa.save()
 
@@ -30,8 +30,6 @@ class MovimentacaoFinanceiraTest(TestCase):
         forma_pagamento = FormaPagamento(descricao="Pix")
         forma_pagamento.save()
         cls.pix = forma_pagamento
-
-        super().setUpClass()
 
     def test_should_get_all_movimentacao_financeiras(self):
 
