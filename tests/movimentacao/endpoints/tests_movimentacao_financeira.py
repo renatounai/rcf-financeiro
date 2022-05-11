@@ -37,7 +37,7 @@ class MovimentacaoFinanceiraTest(TestCase):
 
     def test_should_get_all_movimentacao_financeiras(self):
 
-        now = timezone.now()
+        now = datetime.now(tz=timezone.utc)
         MovimentacaoFinanceira.objects.create(
             evento=MovimentacaoFinanceiraTest.evento,
             forma_pagamento=MovimentacaoFinanceiraTest.pix,
@@ -64,13 +64,13 @@ class MovimentacaoFinanceiraTest(TestCase):
         self.assertEqual(formas[0]["forma_pagamento_id"], MovimentacaoFinanceiraTest.pix.id)
         self.assertEqual(formas[0]["valor"], 150.85)
         self.assertEqual(formas[0]["tipo_lancamento"], TipoLancamento.CREDITO)
-        self.assertEqual(formas[0]["data_lancamento"], now)
+        self.assertEqual(formas[0]["data_lancamento"][0:22], now.isoformat()[0:22])
 
         self.assertEqual(formas[1]["evento_id"], MovimentacaoFinanceiraTest.evento.id)
         self.assertEqual(formas[1]["forma_pagamento_id"], MovimentacaoFinanceiraTest.pix.id)
         self.assertEqual(formas[1]["valor"], 30.40)
         self.assertEqual(formas[1]["tipo_lancamento"], TipoLancamento.DEBITO)
-        self.assertEqual(formas[1]["data_lancamento"], now)
+        self.assertEqual(formas[1]["data_lancamento"][0:22], now.isoformat()[0:22])
 
     def test_shoud_return_empty_if_nothing_found(self):
         response = self.client.get("/api/movimentacoes_financeiras/")
