@@ -3,6 +3,7 @@ from time import timezone
 
 from django.test import TestCase
 from django.utils import timezone
+from pydantic.datetime_parse import timezone
 
 from movimentacao.endpoints.movimentacao_financeira_rest import MovimentacaoFinanceiraIn
 from movimentacao.models.evento import Evento
@@ -77,24 +78,24 @@ class MovimentacaoFinanceiraTest(TestCase):
         self.assertEqual(response.json(), [])
 
     def test_shoud_get_a_movimentacao_financeira(self):
-        now = timezone.now()
+        data_lancamento = datetime.now(tz=timezone.utc)
         movimentacao_financeira = MovimentacaoFinanceira.objects.create(
             evento=MovimentacaoFinanceiraTest.evento,
             forma_pagamento=MovimentacaoFinanceiraTest.pix,
             valor=200.0,
             tipo_lancamento=TipoLancamento.CREDITO,
-            data_lancamento=now
+            data_lancamento=data_lancamento
         )
 
         response = self.client.get(f"/api/movimentacoes_financeiras/{movimentacao_financeira.id}")
 
         movimentacao_financeira_json = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(movimentacao_financeira_json["evento_id"], movimentacao_financeira.id)
+        self.assertEqual(movimentacao_financeira_json["evento_id"], MovimentacaoFinanceiraTest.evento.id)
         self.assertEqual(movimentacao_financeira_json["forma_pagamento_id"], MovimentacaoFinanceiraTest.pix.id)
         self.assertEqual(movimentacao_financeira_json["valor"], 200.0)
         self.assertEqual(movimentacao_financeira_json["tipo_lancamento"], TipoLancamento.CREDITO)
-        self.assertEqual(movimentacao_financeira_json["data_lancamento"], now)
+        self.assertEqual(movimentacao_financeira_json["data_lancamento"][0:22], data_lancamento.isoformat()[0:22])
 
     def test_should_create_a_movimentacao_financeira_sem_data(self):
         movimentacao_financeira_credito_sem_data_lancamento = MovimentacaoFinanceiraIn(
@@ -113,7 +114,7 @@ class MovimentacaoFinanceiraTest(TestCase):
         self.assertEqual(MovimentacaoFinanceira.objects.count(), 1)
 
     def test_should_create_a_movimentacao_financeira_com_data(self):
-        data_lancamento = timezone.timezone(2022, 5, 10, 11, 50, 30, 0)
+        data_lancamento = datetime.now(tz=timezone.utc)
         movimentacao_financeira_credito_sem_data_lancamento = MovimentacaoFinanceiraIn(
             evento_id=MovimentacaoFinanceiraTest.evento.id,
             forma_pagamento_id=MovimentacaoFinanceiraTest.pix.id,
@@ -129,4 +130,4 @@ class MovimentacaoFinanceiraTest(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(MovimentacaoFinanceira.objects.count(), 1)
-        self.assertEqual(response.json()["data_lancamento"], data_lancamento.isoformat())
+        self.assertEqual(response.json()["data_lancamento"][0:22], data_lancamento.isoformat()[0:22])
