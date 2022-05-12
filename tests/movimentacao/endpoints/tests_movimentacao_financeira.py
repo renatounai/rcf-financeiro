@@ -19,6 +19,8 @@ APPLICATION_JSON = "application/json"
 
 
 class MovimentacaoFinanceiraTest(TestCase):
+    evento: Evento
+    pix: FormaPagamento
 
     @classmethod
     def setUpTestData(cls):
@@ -64,13 +66,13 @@ class MovimentacaoFinanceiraTest(TestCase):
         self.assertEqual(formas[0]["forma_pagamento_id"], MovimentacaoFinanceiraTest.pix.id)
         self.assertEqual(formas[0]["valor"], 150.85)
         self.assertEqual(formas[0]["tipo_lancamento"], TipoLancamento.CREDITO)
-        self.assertEqual(formas[0]["data_lancamento"][0:22], now.isoformat()[0:22])
+        self.assertEqual(formas[0]["data_lancamento"][:22], now.isoformat()[:22])
 
         self.assertEqual(formas[1]["evento_id"], MovimentacaoFinanceiraTest.evento.id)
         self.assertEqual(formas[1]["forma_pagamento_id"], MovimentacaoFinanceiraTest.pix.id)
         self.assertEqual(formas[1]["valor"], 30.40)
         self.assertEqual(formas[1]["tipo_lancamento"], TipoLancamento.DEBITO)
-        self.assertEqual(formas[1]["data_lancamento"][0:22], now.isoformat()[0:22])
+        self.assertEqual(formas[1]["data_lancamento"][:22], now.isoformat()[:22])
 
     def test_shoud_return_empty_if_nothing_found(self):
         response = self.client.get("/api/movimentacoes_financeiras/")
@@ -95,7 +97,7 @@ class MovimentacaoFinanceiraTest(TestCase):
         self.assertEqual(movimentacao_financeira_json["forma_pagamento_id"], MovimentacaoFinanceiraTest.pix.id)
         self.assertEqual(movimentacao_financeira_json["valor"], 200.0)
         self.assertEqual(movimentacao_financeira_json["tipo_lancamento"], TipoLancamento.CREDITO)
-        self.assertEqual(movimentacao_financeira_json["data_lancamento"][0:22], data_lancamento.isoformat()[0:22])
+        self.assertEqual(movimentacao_financeira_json["data_lancamento"][:22], data_lancamento.isoformat()[:22])
 
     def test_should_create_a_movimentacao_financeira_sem_data(self):
         movimentacao_financeira_credito_sem_data_lancamento = MovimentacaoFinanceiraIn(
@@ -130,4 +132,41 @@ class MovimentacaoFinanceiraTest(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(MovimentacaoFinanceira.objects.count(), 1)
-        self.assertEqual(response.json()["data_lancamento"][0:22], data_lancamento.isoformat()[0:22])
+        self.assertEqual(response.json()["data_lancamento"][:22], data_lancamento.isoformat()[:22])
+
+    def test_should_update_a_movimentacao_financeira(self):
+        movimentacao_financeira = MovimentacaoFinanceira.objects.create(
+            evento=MovimentacaoFinanceiraTest.evento,
+            forma_pagamento=MovimentacaoFinanceiraTest.pix,
+            valor=200.0,
+            tipo_lancamento=TipoLancamento.CREDITO,
+            data_lancamento=datetime.now(tz=timezone.utc)
+        )
+
+        response = self.client.put(
+            f"/api/movimentacoes_financeiras/{movimentacao_financeira.id}",
+            {
+                "evento_id": movimentacao_financeira.evento_id,
+                "forma_pagamento_id": movimentacao_financeira.forma_pagamento_id,
+                "valor": 320.50,
+                "tipo_lancamento": movimentacao_financeira.tipo_lancamento,
+                "data_lancamento": movimentacao_financeira.data_lancamento.isoformat()
+            },
+            content_type="application/json")
+
+        self.assertEqual(200, response.status_code)
+        updated_movimentacao_financeira = MovimentacaoFinanceira.objects.get(pk=movimentacao_financeira.id)
+        self.assertEqual(updated_movimentacao_financeira.valor, 320.50)
+
+    def test_should_delete_a_movimentacao_financeira(self):
+        movimentacao_financeira = MovimentacaoFinanceira.objects.create(
+            evento=MovimentacaoFinanceiraTest.evento,
+            forma_pagamento=MovimentacaoFinanceiraTest.pix,
+            valor=200.0,
+            tipo_lancamento=TipoLancamento.CREDITO,
+            data_lancamento=datetime.now(tz=timezone.utc)
+        )
+
+        response = self.client.delete(f"/api/movimentacoes_financeiras/{movimentacao_financeira.id}")
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, MovimentacaoFinanceira.objects.count())

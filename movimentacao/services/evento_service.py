@@ -1,7 +1,3 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING, Protocol
-
 from django.shortcuts import get_object_or_404
 from ninja.errors import ValidationError
 
@@ -11,17 +7,8 @@ from movimentacao.models.motivo_cancelamento import MotivoCancelamento
 from movimentacao.models.pessoa import Pessoa
 from movimentacao.models.status_evento import StatusEvento
 from movimentacao.models.tipo_evento import TipoEvento
-
-if TYPE_CHECKING:
-    from movimentacao.endpoints.evento_rest import EventoIn
 from movimentacao.services import tipo_evento_service, pessoa_service, motivo_cancelamento_service
 from utils.string_utils import is_not_empty
-
-
-class Cancelamento(Protocol):
-    def __init__(self, motivo_cancelamento_id: int, motivo_cancelamento_descricao: str):
-        self.motivo_cancelamento_id = motivo_cancelamento_id
-        self.motivo_cancelamento_descricao = motivo_cancelamento_descricao
 
 
 def save(evento: Evento) -> None:
@@ -29,7 +16,7 @@ def save(evento: Evento) -> None:
     evento.save()
 
 
-def save_evento_in(evento_in: EventoIn) -> Evento:
+def save_evento_in(evento_in) -> Evento:
     evento = Evento.from_evento_in(evento_in)
 
     if evento_in.tipo_evento_id is None and is_not_empty(evento_in.tipo_evento_descricao):
@@ -51,14 +38,14 @@ def save_evento_in(evento_in: EventoIn) -> Evento:
     return evento
 
 
-def _set_motivo_cancelamento(evento: Evento, evento_in: Cancelamento):
+def _set_motivo_cancelamento(evento: Evento, evento_in):
     if evento_in.motivo_cancelamento_id is None and is_not_empty(evento_in.motivo_cancelamento_descricao):
         motivo_cancelamento = MotivoCancelamento(descricao=evento_in.motivo_cancelamento_descricao)
         motivo_cancelamento_service.save(motivo_cancelamento)
         evento.motivo_cancelamento = motivo_cancelamento
 
 
-def cancelar(evento_id, motivo_cancelamento_in: Cancelamento) -> Evento:
+def cancelar(evento_id, motivo_cancelamento_in) -> Evento:
     evento = Evento.objects.get(pk=evento_id)
     evento.status = StatusEvento.CANCELADO
 

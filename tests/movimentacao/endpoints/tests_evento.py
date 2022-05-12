@@ -65,6 +65,22 @@ class EventoTest(TestCase):
         response = self.client.post("/api/eventos/", evento_in, content_type=APPLICATION_JSON)
         self.assertEqual(response.status_code, 201)
 
+    def test_should_create_an_evento_with_only_tipo_evento_descricao(self):
+        pessoa = Pessoa(nome="Renato")
+        pessoa.save()
+
+        evento_in = {
+            "quitado": False,
+            "status": StatusEvento.CANCELADO,
+            "gratuito": False,
+            "cliente_id": pessoa.id,
+            "tipo_evento_descricao": 'Batizado',
+            "motivo_cancelamento_descricao": "Falta de dinheiro"
+        }
+
+        response = self.client.post("/api/eventos/", evento_in, content_type=APPLICATION_JSON)
+        self.assertEqual(response.status_code, 201)
+
     def test_deve_lancar_erro_ao_informar_motivo_cancelamento_quando_nao_cancelado(self):
         pessoa = Pessoa(nome="Renato")
         pessoa.save()
