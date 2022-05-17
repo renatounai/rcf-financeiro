@@ -6,6 +6,7 @@ from django.utils import timezone
 from pydantic.datetime_parse import timezone
 
 from movimentacao.endpoints.movimentacao_financeira_rest import MovimentacaoFinanceiraIn
+from movimentacao.messages import EVENTO_NOT_FOUND
 from movimentacao.models.evento import Evento
 from movimentacao.models.forma_pagamento import FormaPagamento
 from movimentacao.models.movimentacao_financeira import MovimentacaoFinanceira
@@ -133,6 +134,25 @@ class MovimentacaoFinanceiraTest(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(MovimentacaoFinanceira.objects.count(), 1)
         self.assertEqual(response.json()["data_lancamento"][:22], data_lancamento.isoformat()[:22])
+
+    def test_should_raise_error_invalid_event(self):
+        data_lancamento = datetime.now(tz=timezone.utc)
+        movimentacao_financeira_credito_sem_data_lancamento = MovimentacaoFinanceiraIn(
+            evento_id=100,
+            forma_pagamento_id=MovimentacaoFinanceiraTest.pix.id,
+            tipo_lancamento=TipoLancamento.CREDITO,
+            valor=250.0,
+            data_lancamento=data_lancamento
+        )
+
+        response = self.client.post(
+            "/api/movimentacoes_financeiras/",
+            movimentacao_financeira_credito_sem_data_lancamento.__dict__,
+            content_type="application/json")
+
+        print(response.json())
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["detail"], ["A instância de evento com id 100 não existe."])
 
     def test_should_update_a_movimentacao_financeira(self):
         movimentacao_financeira = MovimentacaoFinanceira.objects.create(

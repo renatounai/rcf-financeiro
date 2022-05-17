@@ -4,7 +4,9 @@ from django.utils import timezone
 from ninja.errors import ValidationError
 
 from movimentacao.exceptions.MovimentacaoError import MovimentacaoError
+from movimentacao.models.evento import Evento
 from movimentacao.models.movimentacao_financeira import MovimentacaoFinanceira
+from movimentacao.services import evento_service
 from utils.model_utils import is_model_empty
 
 MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO = "O evento é obtigatório!"
@@ -16,7 +18,7 @@ MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_INVALIDO = "Informe um tipo de lançamen
 
 
 def save(movimentacao_financeira: MovimentacaoFinanceira):
-    if is_model_empty(movimentacao_financeira.evento):
+    if not movimentacao_financeira.evento_id:
         raise MovimentacaoError(MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO)
 
     if is_model_empty(movimentacao_financeira.forma_pagamento):

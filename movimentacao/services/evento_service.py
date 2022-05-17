@@ -1,7 +1,9 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from ninja.errors import ValidationError
 
-from movimentacao.messages import EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELADO
+from movimentacao.exceptions.MovimentacaoError import MovimentacaoError
+from movimentacao.messages import EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELADO, EVENTO_NOT_FOUND
 from movimentacao.models.evento import Evento
 from movimentacao.models.motivo_cancelamento import MotivoCancelamento
 from movimentacao.models.pessoa import Pessoa
@@ -56,3 +58,10 @@ def cancelar(evento_id, motivo_cancelamento_in) -> Evento:
 
     save(evento)
     return evento
+
+
+def get(pk: int) -> Evento:
+    try:
+        return Evento.objects.get(pk=pk)
+    except ObjectDoesNotExist:
+        raise MovimentacaoError(EVENTO_NOT_FOUND)

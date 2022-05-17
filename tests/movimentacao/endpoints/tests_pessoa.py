@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
 from movimentacao.endpoints.pessoa_rest import PessoaIn
+from movimentacao.messages import PESSOA_NOME_OBRIGATORIO
 from movimentacao.models.pessoa import Pessoa
 
 APPLICATION_JSON = "application/json"
@@ -74,6 +75,18 @@ class PessoaTest(TestCase):
         response = self.client.post("/api/pessoas/", pessoa.__dict__, content_type=APPLICATION_JSON)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Pessoa.objects.count(), 1)
+
+    def test_should_raise_error_if_nome_is_blank(self):
+        pessoa = {"nome": ""}
+        response = self.client.post("/api/pessoas/", pessoa, content_type=APPLICATION_JSON)
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.json()['detail'], PESSOA_NOME_OBRIGATORIO)
+
+    def test_should_raise_error_if_nome_is_white_space(self):
+        pessoa = {"nome": "    "}
+        response = self.client.post("/api/pessoas/", pessoa, content_type=APPLICATION_JSON)
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.json()['detail'], PESSOA_NOME_OBRIGATORIO)
 
     def test_should_raise_error_if_email_is_invalid(self):
         pessoa = {"nome": "Renato", "email": "renato"}
