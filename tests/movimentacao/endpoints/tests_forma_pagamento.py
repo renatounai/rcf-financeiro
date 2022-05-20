@@ -3,9 +3,11 @@ from django.test import TestCase
 from ninja.errors import ValidationError
 
 from movimentacao.endpoints.forma_pagamento_rest import FormaPagamentoIn
-from movimentacao.messages import FORMA_PAGAMENTO_DESCRICAO_REPETIDA, FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA
+from movimentacao.exceptions.MovimentacaoError import MovimentacaoError
+from movimentacao.messages import FORMA_PAGAMENTO_DESCRICAO_REPETIDA, FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA, \
+    EVENTO_NOT_FOUND
 from movimentacao.models.forma_pagamento import FormaPagamento
-from movimentacao.services import forma_pagamento_service
+from movimentacao.services import forma_pagamento_service, evento_service
 
 APPLICATION_JSON = "application/json"
 
@@ -99,3 +101,8 @@ class FormaPagamentoTest(TestCase):
         with self.assertRaises(ValidationError, msg=FORMA_PAGAMENTO_DESCRICAO_REPETIDA):
             dinheiro.descricao = "Pix"
             forma_pagamento_service.save(dinheiro)
+
+    def test_get_evento_not_exists(self):
+        with self.assertRaises(MovimentacaoError, msg=EVENTO_NOT_FOUND):
+            evento_service.get(1)
+

@@ -12,3 +12,9 @@ MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO = "A descrição do motivo de cancelam
 MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA = "Ja existe um motivo de cancelamento com esta descriçao!"
 EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELADO = "Não é possível informar o motivo de cancelamento quando o " \
                                                       "evento não está cancelado! "
+MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO = "O evento é obtigatório!"
+MOVIMENTACAO_FINANCEIRA_FORMA_PAGAMENTO_OBRIGATORIO = "A forma de pagamento é obtigatória!"
+MOVIMENTACAO_FINANCEIRA_VALOR_OBRIGATORIO = "O valor é obrigatório!"
+MOVIMENTACAO_FINANCEIRA_VALOR_NEGATIVO = "O valor não pode ser negativo!"
+MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_OBRIGATORIO = "O tipo de lançamento é obrigatório!"
+MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_INVALIDO = "Informe um tipo de lançamento válido!"

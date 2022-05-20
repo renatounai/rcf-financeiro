@@ -18,8 +18,8 @@ def save(evento: Evento) -> None:
     evento.save()
 
 
-def save_evento_in(evento_in) -> Evento:
-    evento = Evento.from_evento_in(evento_in)
+def save_evento_in(evento_in, evento_id: int = None) -> Evento:
+    evento = Evento.from_evento_in(evento_in, evento_id)
 
     if evento_in.tipo_evento_id is None and is_not_empty(evento_in.tipo_evento_descricao):
         tipo_evento = TipoEvento(descricao=evento_in.tipo_evento_descricao)

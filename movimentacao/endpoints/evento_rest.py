@@ -1,14 +1,11 @@
 from datetime import datetime
 from http import HTTPStatus
+from typing import List
 
 from django.shortcuts import get_object_or_404
 from ninja import Router, Schema
-from pydantic import EmailStr
 
-from utils.api_utils import get_list_or_204
-from .motivo_cancelamento_rest import MotivoCancelamentoIn
 from ..models.evento import Evento
-from ..models.pessoa import Pessoa
 from ..services import evento_service
 
 
@@ -18,13 +15,14 @@ class ClienteOut(Schema):
 
 
 class EventoOut(Schema):
-    pk: int
+    id: int
     agendado_para: datetime = None
     valor_cobrado: float = None
     quitado: bool
     status: int
     url_galeria: str = None
     cliente: ClienteOut
+    tipo_evento_id: int
 
 
 class EventoIn(Schema):
@@ -55,7 +53,7 @@ def find_by_id(_, evento_id: int):
     return get_object_or_404(Evento, id=evento_id)
 
 
-@router.get("/", response={HTTPStatus.NO_CONTENT: None})
+@router.get("/", response={HTTPStatus.OK: List[EventoOut] , HTTPStatus.NO_CONTENT: None})
 def find_all(_):
     return Evento.objects.all()
 
@@ -67,8 +65,7 @@ def create_evento(_, payload: EventoIn):
 
 @router.put("/{evento_id}", response={HTTPStatus.OK: EventoOut})
 def update_evento(_, evento_id: int, payload: EventoIn):
-    evento = get_object_or_404(Evento, id=evento_id)
-    evento_service.save_evento_in(payload)
+    evento = evento_service.save_evento_in(payload, evento_id)
     return evento
 
 

@@ -1,4 +1,7 @@
+import datetime
+
 from django.test import TestCase
+from django.utils import timezone
 
 from movimentacao.messages import EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELADO
 from movimentacao.models.evento import Evento
@@ -138,4 +141,126 @@ class EventoTest(TestCase):
         self.assertEqual(response.status_code, 200)
         evento = Evento.objects.get(id=evento.id)
         self.assertTrue(StatusEvento.CANCELADO, evento.status)
+
+    def test_shoud_get_all_eventos(self):
+        renato = Pessoa(nome="Renato")
+        renato.save()
+
+        ellen = Pessoa(nome="Ellen")
+        ellen.save()
+
+        tipo_evento = TipoEvento(descricao="Boudoir")
+        tipo_evento.save()
+
+        Evento.objects.create(
+            agendado_para=datetime.datetime(2022, 6, 20, 16, tzinfo=timezone.utc),
+            valor_cobrado=300.0,
+            quitado=False,
+            status=StatusEvento.NEGOCIANDO,
+            cliente=renato,
+            tipo_evento=tipo_evento,
+            gratuito=False
+        )
+
+        Evento.objects.create(
+            agendado_para=datetime.datetime(2022, 7, 20, 20, 30, tzinfo=timezone.utc),
+            valor_cobrado=0,
+            quitado=False,
+            status=StatusEvento.NEGOCIANDO,
+            cliente=ellen,
+            tipo_evento=tipo_evento,
+            gratuito=True,
+            url_galeria="https://site.com"
+        )
+
+        response = self.client.get("/api/eventos/")
+        eventos = response.json()
+
+        print(response.json())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(eventos), 2)
+        self.assertEqual(eventos[0]["valor_cobrado"], 300.0)
+        self.assertEqual(eventos[0]["agendado_para"], '2022-06-20T16:00:00Z')
+        self.assertEqual(eventos[0]["quitado"], False)
+        self.assertEqual(eventos[0]["status"], StatusEvento.NEGOCIANDO)
+        self.assertIsNone(eventos[0]["url_galeria"])
+        self.assertEqual(eventos[0]["cliente"]["nome"], "Renato")
+        self.assertEqual(eventos[0]["tipo_evento_id"], tipo_evento.id)
+
+        self.assertEqual(eventos[1]["valor_cobrado"], 0)
+        self.assertEqual(eventos[1]["agendado_para"], '2022-07-20T20:30:00Z')
+        self.assertEqual(eventos[1]["quitado"], False)
+        self.assertEqual(eventos[1]["status"], StatusEvento.NEGOCIANDO)
+        self.assertEqual(eventos[1]["cliente"]["nome"], "Ellen")
+        self.assertEqual(eventos[1]["url_galeria"], "https://site.com")
+        self.assertEqual(eventos[1]["tipo_evento_id"], tipo_evento.id)
+
+    def test_should_get_an_evento(self):
+        renato = Pessoa(nome="Renato")
+        renato.save()
+
+        tipo_evento = TipoEvento(descricao="Boudoir")
+        tipo_evento.save()
+
+        evento_saved = Evento.objects.create(
+            agendado_para=datetime.datetime(2022, 6, 20, 16, tzinfo=timezone.utc),
+            valor_cobrado=300.0,
+            quitado=False,
+            status=StatusEvento.NEGOCIANDO,
+            cliente=renato,
+            tipo_evento=tipo_evento,
+            gratuito=False
+        )
+
+        response = self.client.get(f"/api/eventos/{evento_saved.id}")
+
+        evento = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(evento["id"], evento_saved.id)
+        self.assertEqual(evento["agendado_para"], '2022-06-20T16:00:00Z')
+        self.assertEqual(evento["quitado"], False)
+        self.assertEqual(evento["status"], StatusEvento.NEGOCIANDO)
+        self.assertIsNone(evento["url_galeria"])
+        self.assertEqual(evento["cliente"]["nome"], "Renato")
+        self.assertEqual(evento["tipo_evento_id"], tipo_evento.id)
+
+    def test_should_update_an_evento(self):
+        renato = Pessoa(nome="Renato")
+        renato.save()
+
+        tipo_evento = TipoEvento(descricao="Boudoir")
+        tipo_evento.save()
+
+        tipo_evento_casamento = TipoEvento(descricao="Casamento")
+        tipo_evento_casamento.save()
+
+        evento_saved = Evento.objects.create(
+            agendado_para=datetime.datetime(2022, 6, 20, 16, tzinfo=timezone.utc),
+            valor_cobrado=300.0,
+            quitado=False,
+            status=StatusEvento.NEGOCIANDO,
+            cliente=renato,
+            tipo_evento=tipo_evento,
+            gratuito=False
+        )
+
+        evento_in = {
+            "quitado": evento_saved.quitado,
+            "status": evento_saved.status,
+            "gratuito": evento_saved.gratuito,
+            "cliente_id": evento_saved.cliente_id,
+            "tipo_evento_id": tipo_evento_casamento.id,
+            "motivo_cancelamento_id": evento_saved.motivo_cancelamento_id
+        }
+
+        response = self.client.put(f"/api/eventos/{evento_saved.id}", evento_in,
+                                   content_type="application/json")
+
+        evento = Evento.objects.get(pk=evento_saved.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(evento.id, evento_saved.id)
+        self.assertEqual(evento.tipo_evento_id, tipo_evento_casamento.id)
+
+
 

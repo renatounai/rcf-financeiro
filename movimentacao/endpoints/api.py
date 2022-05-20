@@ -1,5 +1,4 @@
 from django.core.exceptions import ValidationError
-from django.http import HttpResponse
 from ninja import NinjaAPI
 
 from movimentacao.endpoints.evento_rest import router as eventos_router
