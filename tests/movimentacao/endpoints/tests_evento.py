@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
@@ -16,6 +17,10 @@ APPLICATION_JSON = "application/json"
 class EventoTest(TestCase):
 
     def test_should_create_an_evento(self):
+        user_model = get_user_model()
+        user_model.objects.create_user('temporary', 'temporary@gmail.com', 'temporary')
+        self.client.login(username='temporary', password='temporary')
+
         pessoa = Pessoa(nome="Renato")
         pessoa.save()
 
@@ -175,8 +180,6 @@ class EventoTest(TestCase):
 
         response = self.client.get("/api/eventos/")
         eventos = response.json()
-
-        print(response.json())
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(eventos), 2)

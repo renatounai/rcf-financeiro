@@ -154,7 +154,6 @@ class MovimentacaoFinanceiraTest(TestCase):
             movimentacao_financeira_credito_sem_data_lancamento.__dict__,
             content_type="application/json")
 
-        print(response.json())
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["detail"], ["A instância de evento com id 100 não existe."])
 
