@@ -7,6 +7,7 @@ from rest_framework_simplejwt.exceptions import InvalidToken
 
 
 class AuthBearer(HttpBearer):
+
     def authenticate(self, request: HttpRequest, token: str) -> Optional[Any]:
         jwt_authenticator = JWTAuthentication()
         try:
@@ -14,5 +15,5 @@ class AuthBearer(HttpBearer):
             if response is not None:
                 return True
             return False
-        except InvalidToken as ex:
+        except InvalidToken:
             return False
