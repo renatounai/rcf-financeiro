@@ -3,6 +3,7 @@ from ninja import NinjaAPI
 
 from auth.auth import router as auth_router
 from auth.auth_bearer import AuthBearer
+from financeiro import settings
 from movimentacao.endpoints.evento_rest import router as eventos_router
 from movimentacao.endpoints.forma_pagamento_rest import router as formas_pagamento_router
 from movimentacao.endpoints.motivo_cancelamento_rest import router as motivos_cancelamento_router
@@ -10,7 +11,8 @@ from movimentacao.endpoints.movimentacao_financeira_rest import router as movime
 from movimentacao.endpoints.pessoa_rest import router as pessoas_router
 from movimentacao.endpoints.tipo_evento_rest import router as tipos_evento_router
 
-api = NinjaAPI(auth=AuthBearer())
+auth = None if settings.TESTING else AuthBearer()
+api = NinjaAPI(auth=auth)
 
 
 @api.exception_handler(ValidationError)
