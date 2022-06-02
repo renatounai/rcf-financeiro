@@ -4,6 +4,10 @@ from movimentacao.services.base import validate_description
 
 
 def save(motivo_cancelamento: MotivoCancelamento):
-    validate_description(motivo_cancelamento, MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO, MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA)
+    validate_description(
+        motivo_cancelamento,
+        MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO,
+        MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA
+    )
     motivo_cancelamento.full_clean()
     motivo_cancelamento.save()

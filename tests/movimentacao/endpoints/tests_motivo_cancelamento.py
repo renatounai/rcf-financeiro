@@ -3,8 +3,7 @@ from django.test import TestCase
 from ninja.errors import ValidationError
 
 from movimentacao.endpoints.motivo_cancelamento_rest import MotivoCancelamentoIn
-from movimentacao.messages import TIPO_EVENTO_DESCRICAO_REPETIDA, \
-    MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO, MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA
+from movimentacao.messages import MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO, MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA
 from movimentacao.models.motivo_cancelamento import MotivoCancelamento
 from movimentacao.services import motivo_cancelamento_service
 
@@ -53,7 +52,7 @@ class MotivoCancelamentoTest(TestCase):
         self.assertEqual(response.json()["detail"], MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO)
 
     def test_shoud_raise_error_when_description_is_white_space(self):
-        response = self.client.post("/api/motivos_cancelamento/", {"descricao": "    "}, content_type="application/json")
+        response = self.client.post("/api/motivos_cancelamento/", {"descricao": "   "}, content_type="application/json")
         self.assertEqual(response.status_code, 422)
         self.assertEqual(response.json()["detail"], MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO)
 

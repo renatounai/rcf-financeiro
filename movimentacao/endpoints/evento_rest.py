@@ -53,7 +53,7 @@ def find_by_id(_, evento_id: int):
     return get_object_or_404(Evento, id=evento_id)
 
 
-@router.get("/", response={HTTPStatus.OK: List[EventoOut] , HTTPStatus.NO_CONTENT: None})
+@router.get("/", response={HTTPStatus.OK: List[EventoOut], HTTPStatus.NO_CONTENT: None})
 def find_all(_):
     return Evento.objects.all()
 

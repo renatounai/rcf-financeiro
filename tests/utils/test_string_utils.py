@@ -16,6 +16,7 @@ class Test(TestCase):
         text = '        '
         self.assertTrue(is_empty(text))
 
+    # noinspection PyTypeChecker
     def test_is_empty_none(self):
         text = None
         self.assertTrue(is_empty(text))

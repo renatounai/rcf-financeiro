@@ -4,7 +4,7 @@ from typing import List
 from django.shortcuts import get_object_or_404
 from ninja import Schema, Router
 
-from utils.api_utils import get_list_or_204, dict_to_model
+from utils.api_utils import dict_to_model
 from ..models.motivo_cancelamento import MotivoCancelamento
 from ..services import motivo_cancelamento_service
 

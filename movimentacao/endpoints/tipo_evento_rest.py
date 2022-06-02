@@ -4,7 +4,6 @@ from typing import List
 from django.shortcuts import get_object_or_404
 from ninja import Schema, Router
 
-from utils.api_utils import get_list_or_204
 from ..models.tipo_evento import TipoEvento
 from ..services import tipo_evento_service
 

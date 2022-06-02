@@ -1,4 +1,3 @@
-import datetime
 from http import HTTPStatus
 
 from ninja.errors import HttpError

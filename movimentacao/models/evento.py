@@ -28,12 +28,12 @@ class Evento(BaseModel):
         else:
             evento = Evento()
 
-        evento.agendado_para=evento_in.agendado_para
-        evento.valor_cobrado=evento_in.valor_cobrado
-        evento.quitado=evento_in.quitado
-        evento.status=evento_in.status
-        evento.url_galeria=evento_in.url_galeria
-        evento.gratuito=evento_in.gratuito
+        evento.agendado_para = evento_in.agendado_para
+        evento.valor_cobrado = evento_in.valor_cobrado
+        evento.quitado = evento_in.quitado
+        evento.status = evento_in.status
+        evento.url_galeria = evento_in.url_galeria
+        evento.gratuito = evento_in.gratuito
 
         if evento_in.tipo_evento_id:
             evento.tipo_evento = get_object_or_404(TipoEvento, id=evento_in.tipo_evento_id)

@@ -5,7 +5,7 @@ from typing import List
 from django.shortcuts import get_object_or_404
 from ninja import Schema, Router
 
-from utils.api_utils import get_list_or_204, dict_to_model
+from utils.api_utils import dict_to_model
 from ..models.movimentacao_financeira import MovimentacaoFinanceira
 from ..models.tipo_lancamento import TipoLancamento
 from ..services import movimentacao_financeira_service
