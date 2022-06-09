@@ -23,11 +23,8 @@ router = Router()
 @router.post('/login', response={HTTPStatus.OK: JWTPairSchema}, auth=None)
 def login(_, auth: AuthSchema):
     user = authenticate(**auth.dict())
-    if user is not None:
+    if user:
         refresh = RefreshToken.for_user(user)
+        return JWTPairSchema(refresh=str(refresh), access=str(refresh.access_token))
 
-        return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }
     raise HttpError(401, "Not authorized")
