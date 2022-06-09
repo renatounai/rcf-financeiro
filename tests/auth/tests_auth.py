@@ -1,6 +1,8 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User as UserModel
 from django.test import TestCase
 
+from auth import user_service
+from auth.user_rest import User
 
 APPLICATION_JSON = "application/json"
 
@@ -8,9 +10,8 @@ APPLICATION_JSON = "application/json"
 class EventoTest(TestCase):
 
     def test_login(self):
-        user_model = get_user_model()
-        user = user_model.objects.create_user('username', 'username@gmail.com', '123456')
-        data = {"username": user.username, "password": "123456"}
+        user_service.create_account(User(email="username@gmail.com", password="123456"))
+        data = {"username": "username@gmail.com", "password": "123456"}
 
         response = self.client.post("/api/auth/login", data, content_type=APPLICATION_JSON)
         tokens = response.json()
@@ -19,3 +20,10 @@ class EventoTest(TestCase):
         self.assertIsNotNone(tokens["refresh"])
         self.assertIsNotNone(tokens["access"])
 
+    def test_create_account(self):
+        user = {"email": "testador@gmail.com", "password": "123456"}
+        response = self.client.post("/api/users/", user, content_type="application/json")
+        self.assertEqual(response.status_code, 201)
+
+        user_created: UserModel = UserModel.objects.get_by_natural_key("testador@gmail.com")
+        self.assertIsNotNone(user_created)
