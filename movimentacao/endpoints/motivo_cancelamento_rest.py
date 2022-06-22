@@ -32,8 +32,7 @@ def find_all(_):
 
 @router.post("/", response={HTTPStatus.CREATED: MotivoCancelamentoOut})
 def create_motivo_cancelamento(_, payload: MotivoCancelamentoIn):
-    motivo_cancelamento = MotivoCancelamento()
-    dict_to_model(payload.dict(), motivo_cancelamento)
+    motivo_cancelamento = MotivoCancelamento(**payload.dict())
     motivo_cancelamento.save()
     return motivo_cancelamento
 

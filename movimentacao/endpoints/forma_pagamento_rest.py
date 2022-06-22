@@ -32,8 +32,7 @@ def find_all(_):
 
 @router.post("/", response={HTTPStatus.CREATED: FormaPagamentoOut})
 def create_forma_pagamento(_, payload: FormaPagamentoIn):
-    forma_pagamento = FormaPagamento()
-    dict_to_model(payload.dict(), forma_pagamento)
+    forma_pagamento = FormaPagamento(**payload.dict())
     forma_pagamento.save()
     return forma_pagamento
 

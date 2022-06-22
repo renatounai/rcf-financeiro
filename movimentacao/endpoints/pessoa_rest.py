@@ -41,8 +41,7 @@ def find_all(_):
 
 @router.post("/", response={HTTPStatus.CREATED: PessoaOut})
 def create_pessoa(_, payload: PessoaIn):
-    pessoa = Pessoa()
-    dict_to_model(payload.dict(), pessoa)
+    pessoa = Pessoa(**payload.dict())
     pessoa.save()
     return pessoa
 

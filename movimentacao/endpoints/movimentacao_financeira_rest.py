@@ -42,8 +42,7 @@ def find_all(_):
 
 @router.post("/", response={HTTPStatus.CREATED: MovimentacaoFinanceiraOut})
 def create_movimentacao_financeira(_, payload: MovimentacaoFinanceiraIn):
-    movimentacao_financeira = MovimentacaoFinanceira()
-    dict_to_model(payload.dict(), movimentacao_financeira)
+    movimentacao_financeira = MovimentacaoFinanceira(**payload.dict())
     movimentacao_financeira.save()
     return movimentacao_financeira
 

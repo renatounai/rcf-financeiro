@@ -31,7 +31,7 @@ def find_all(_):
 
 @router.post("/", response={HTTPStatus.CREATED: TipoEventoOut})
 def create_tipo_evento(_, payload: TipoEventoIn):
-    tipo_evento = TipoEvento(descricao=payload.descricao)
+    tipo_evento = TipoEvento(**payload.dict())
     tipo_evento.save()
     return tipo_evento
 
