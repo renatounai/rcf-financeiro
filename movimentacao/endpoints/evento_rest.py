@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404
 from ninja import Router, Schema
 
 from ..models.evento import Evento
-from ..services import evento_service
 
 
 class ClienteOut(Schema):
@@ -60,18 +59,19 @@ def find_all(_):
 
 @router.post("/", response={HTTPStatus.CREATED: EventoOut})
 def create_evento(_, payload: EventoIn):
-    return evento_service.save_evento_in(payload)
+    return Evento.save_evento_in(payload)
 
 
 @router.put("/{evento_id}", response={HTTPStatus.OK: EventoOut})
 def update_evento(_, evento_id: int, payload: EventoIn):
-    evento = evento_service.save_evento_in(payload, evento_id)
+    evento = Evento.save_evento_in(payload, evento_id)
     return evento
 
 
 @router.put("/cancelar/{evento_id}", response={HTTPStatus.OK: EventoOut})
-def cancelar_evento(_, evento_id: int, motivo_cancelamento_in: CancelamentoIn):
-    return evento_service.cancelar(evento_id, motivo_cancelamento_in)
+def cancelar_evento(_, evento_id: int, cancelamento_in: CancelamentoIn):
+    evento = Evento.get(evento_id)
+    return evento.cancelar(cancelamento_in)
 
 
 @router.delete("/{evento_id}", response={HTTPStatus.OK: None})

@@ -20,8 +20,5 @@ def create_account(user: User) -> User:
     return User.objects.create_user(user.email, user.email, user.password)
 
 
-def delete(user):
-    pass
-
 
 

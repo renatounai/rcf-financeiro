@@ -1,6 +1,9 @@
 from django.db import models
+from ninja.errors import ValidationError
 
+from movimentacao.messages import PESSOA_NOME_OBRIGATORIO
 from movimentacao.models.base import BaseModel
+from utils.string_utils import is_empty
 
 
 class Pessoa(BaseModel):
@@ -10,7 +13,10 @@ class Pessoa(BaseModel):
     instagram_user = models.CharField(max_length=100, null=True, blank=True)
     facebook_user = models.CharField(max_length=100, null=True, blank=True)
 
-    def clean(self):
+    def before_save(self):
+        if is_empty(self.nome):
+            raise ValidationError(PESSOA_NOME_OBRIGATORIO)
+
         # remove both the domain and the query string
         if self.instagram_user:
             user = self.instagram_user.split("/")

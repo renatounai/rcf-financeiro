@@ -6,7 +6,6 @@ from ninja import Schema, Router
 
 from utils.api_utils import dict_to_model
 from ..models.motivo_cancelamento import MotivoCancelamento
-from ..services import motivo_cancelamento_service
 
 
 class MotivoCancelamentoOut(Schema):
@@ -35,7 +34,7 @@ def find_all(_):
 def create_motivo_cancelamento(_, payload: MotivoCancelamentoIn):
     motivo_cancelamento = MotivoCancelamento()
     dict_to_model(payload.dict(), motivo_cancelamento)
-    motivo_cancelamento_service.save(motivo_cancelamento)
+    motivo_cancelamento.save()
     return motivo_cancelamento
 
 
@@ -43,7 +42,7 @@ def create_motivo_cancelamento(_, payload: MotivoCancelamentoIn):
 def update_motivo_cancelamento(_, motivo_cancelamento_id: int, payload: MotivoCancelamentoIn):
     motivo_cancelamento = get_object_or_404(MotivoCancelamento, id=motivo_cancelamento_id)
     dict_to_model(payload.dict(), motivo_cancelamento)
-    motivo_cancelamento_service.save(motivo_cancelamento)
+    motivo_cancelamento.save()
     return motivo_cancelamento
 
 

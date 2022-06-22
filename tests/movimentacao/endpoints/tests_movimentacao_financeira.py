@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from time import timezone
 
 from django.test import TestCase
@@ -16,7 +17,6 @@ from movimentacao.models.movimentacao_financeira import MovimentacaoFinanceira
 from movimentacao.models.pessoa import Pessoa
 from movimentacao.models.tipo_evento import TipoEvento
 from movimentacao.models.tipo_lancamento import TipoLancamento
-from movimentacao.services import movimentacao_financeira_service
 
 JSON_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
@@ -48,7 +48,7 @@ class MovimentacaoFinanceiraTest(TestCase):
         MovimentacaoFinanceira.objects.create(
             evento=MovimentacaoFinanceiraTest.evento,
             forma_pagamento=MovimentacaoFinanceiraTest.pix,
-            valor=150.85,
+            valor=Decimal("150.85"),
             tipo_lancamento=TipoLancamento.CREDITO,
             data_lancamento=now
         )
@@ -56,7 +56,7 @@ class MovimentacaoFinanceiraTest(TestCase):
         MovimentacaoFinanceira.objects.create(
             evento=MovimentacaoFinanceiraTest.evento,
             forma_pagamento=MovimentacaoFinanceiraTest.pix,
-            valor=30.40,
+            valor=Decimal("30.40"),
             tipo_lancamento=TipoLancamento.DEBITO,
             data_lancamento=now
         )
@@ -198,34 +198,34 @@ class MovimentacaoFinanceiraTest(TestCase):
         movimentacao_financeira = MovimentacaoFinanceira()
 
         with self.assertRaises(MovimentacaoError, msg=MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO):
-            movimentacao_financeira_service.save(movimentacao_financeira)
+            movimentacao_financeira.save()
 
     def test_shoud_raise_error_if_missing_forma_pagamento(self):
         movimentacao_financeira = MovimentacaoFinanceira(evento_id=1)
 
         with self.assertRaises(MovimentacaoError, msg=MOVIMENTACAO_FINANCEIRA_FORMA_PAGAMENTO_OBRIGATORIO):
-            movimentacao_financeira_service.save(movimentacao_financeira)
+            movimentacao_financeira.save()
 
     def test_shoud_raise_error_if_missing_valor(self):
         movimentacao_financeira = MovimentacaoFinanceira(evento_id=1, forma_pagamento_id=1)
 
         with self.assertRaises(MovimentacaoError, msg=MOVIMENTACAO_FINANCEIRA_VALOR_OBRIGATORIO):
-            movimentacao_financeira_service.save(movimentacao_financeira)
+            movimentacao_financeira.save()
 
     def test_shoud_raise_error_if_valor_is_zero(self):
         movimentacao_financeira = MovimentacaoFinanceira(evento_id=1, forma_pagamento_id=1, valor=0)
 
         with self.assertRaises(MovimentacaoError, msg=MOVIMENTACAO_FINANCEIRA_VALOR_OBRIGATORIO):
-            movimentacao_financeira_service.save(movimentacao_financeira)
+            movimentacao_financeira.save()
 
     def test_shoud_raise_error_if_valor_is_less_than_zero(self):
         movimentacao_financeira = MovimentacaoFinanceira(evento_id=1, forma_pagamento_id=1, valor=-10)
 
         with self.assertRaises(MovimentacaoError, msg=MOVIMENTACAO_FINANCEIRA_VALOR_NEGATIVO):
-            movimentacao_financeira_service.save(movimentacao_financeira)
+            movimentacao_financeira.save()
 
     def test_shoud_raise_error_if_missing_tipo_lancamento(self):
         movimentacao_financeira = MovimentacaoFinanceira(evento_id=1, forma_pagamento_id=1, valor=10)
 
         with self.assertRaises(MovimentacaoError, msg=MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_OBRIGATORIO):
-            movimentacao_financeira_service.save(movimentacao_financeira)
+            movimentacao_financeira.save()

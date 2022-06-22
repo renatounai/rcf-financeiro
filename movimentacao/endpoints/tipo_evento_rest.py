@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404
 from ninja import Schema, Router
 
 from ..models.tipo_evento import TipoEvento
-from ..services import tipo_evento_service
 
 
 class TipoEventoOut(Schema):
@@ -33,7 +32,7 @@ def find_all(_):
 @router.post("/", response={HTTPStatus.CREATED: TipoEventoOut})
 def create_tipo_evento(_, payload: TipoEventoIn):
     tipo_evento = TipoEvento(descricao=payload.descricao)
-    tipo_evento_service.save(tipo_evento)
+    tipo_evento.save()
     return tipo_evento
 
 
@@ -41,7 +40,7 @@ def create_tipo_evento(_, payload: TipoEventoIn):
 def update_tipo_evento(_, tipo_evento_id: int, payload: TipoEventoIn):
     tipo_evento = get_object_or_404(TipoEvento, id=tipo_evento_id)
     tipo_evento.descricao = payload.descricao
-    tipo_evento_service.save(tipo_evento)
+    tipo_evento.save()
     return tipo_evento
 
 

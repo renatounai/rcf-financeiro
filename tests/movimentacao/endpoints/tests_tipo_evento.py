@@ -6,7 +6,6 @@ from movimentacao.endpoints.tipo_evento_rest import TipoEventoIn
 from movimentacao.messages import TIPO_EVENTO_DESCRICAO_REPETIDA, \
     TIPO_EVENTO_DESCRICAO_OBRIGATORIO
 from movimentacao.models.tipo_evento import TipoEvento
-from movimentacao.services import tipo_evento_service
 
 APPLICATION_JSON = "application/json"
 
@@ -92,7 +91,7 @@ class TipoEventoTest(TestCase):
     def test_repeated_description(self):
         TipoEvento.objects.create(descricao="Boudoir")
         with self.assertRaises(ValidationError, msg=TIPO_EVENTO_DESCRICAO_REPETIDA):
-            tipo_evento_service.save(TipoEvento(descricao="Boudoir"))
+            TipoEvento(descricao="Boudoir").save()
 
     def test_repeated_description_on_update(self):
         TipoEvento.objects.create(descricao="Boudoir")
@@ -100,5 +99,4 @@ class TipoEventoTest(TestCase):
 
         with self.assertRaises(ValidationError, msg=TIPO_EVENTO_DESCRICAO_REPETIDA):
             gestante.descricao = "Boudoir"
-            tipo_evento_service.save(gestante)
-
+            gestante.save()

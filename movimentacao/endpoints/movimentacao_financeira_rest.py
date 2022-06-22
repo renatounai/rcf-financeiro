@@ -8,7 +8,6 @@ from ninja import Schema, Router
 from utils.api_utils import dict_to_model
 from ..models.movimentacao_financeira import MovimentacaoFinanceira
 from ..models.tipo_lancamento import TipoLancamento
-from ..services import movimentacao_financeira_service
 
 
 class MovimentacaoFinanceiraOut(Schema):
@@ -45,7 +44,7 @@ def find_all(_):
 def create_movimentacao_financeira(_, payload: MovimentacaoFinanceiraIn):
     movimentacao_financeira = MovimentacaoFinanceira()
     dict_to_model(payload.dict(), movimentacao_financeira)
-    movimentacao_financeira_service.save(movimentacao_financeira)
+    movimentacao_financeira.save()
     return movimentacao_financeira
 
 
@@ -53,7 +52,7 @@ def create_movimentacao_financeira(_, payload: MovimentacaoFinanceiraIn):
 def update_movimentacao_financeira(_, movimentacao_financeira_id: int, payload: MovimentacaoFinanceiraIn):
     movimentacao_financeira = get_object_or_404(MovimentacaoFinanceira, id=movimentacao_financeira_id)
     dict_to_model(payload.dict(), movimentacao_financeira)
-    movimentacao_financeira_service.save(movimentacao_financeira)
+    movimentacao_financeira.save()
     return movimentacao_financeira
 
 

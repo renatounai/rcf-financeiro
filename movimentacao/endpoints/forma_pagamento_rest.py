@@ -6,7 +6,6 @@ from ninja import Schema, Router
 
 from utils.api_utils import dict_to_model
 from ..models.forma_pagamento import FormaPagamento
-from ..services import forma_pagamento_service
 
 
 class FormaPagamentoOut(Schema):
@@ -35,7 +34,7 @@ def find_all(_):
 def create_forma_pagamento(_, payload: FormaPagamentoIn):
     forma_pagamento = FormaPagamento()
     dict_to_model(payload.dict(), forma_pagamento)
-    forma_pagamento_service.save(forma_pagamento)
+    forma_pagamento.save()
     return forma_pagamento
 
 
@@ -43,7 +42,7 @@ def create_forma_pagamento(_, payload: FormaPagamentoIn):
 def update_forma_pagamento(_, forma_pagamento_id: int, payload: FormaPagamentoIn):
     forma_pagamento = get_object_or_404(FormaPagamento, id=forma_pagamento_id)
     dict_to_model(payload.dict(), forma_pagamento)
-    forma_pagamento_service.save(forma_pagamento)
+    forma_pagamento.save()
     return forma_pagamento
 
 

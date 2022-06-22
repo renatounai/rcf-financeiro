@@ -7,7 +7,6 @@ from pydantic import EmailStr
 
 from utils.api_utils import dict_to_model
 from ..models.pessoa import Pessoa
-from ..services import pessoa_service
 
 
 class PessoaOut(Schema):
@@ -44,7 +43,7 @@ def find_all(_):
 def create_pessoa(_, payload: PessoaIn):
     pessoa = Pessoa()
     dict_to_model(payload.dict(), pessoa)
-    pessoa_service.save(pessoa)
+    pessoa.save()
     return pessoa
 
 
@@ -52,7 +51,7 @@ def create_pessoa(_, payload: PessoaIn):
 def update_pessoa(_, pessoa_id: int, payload: PessoaIn):
     pessoa = get_object_or_404(Pessoa, id=pessoa_id)
     dict_to_model(payload.dict(), pessoa)
-    pessoa_service.save(pessoa)
+    pessoa.save()
     return pessoa
 
 
