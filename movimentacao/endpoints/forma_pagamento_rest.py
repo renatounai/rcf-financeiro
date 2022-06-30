@@ -1,6 +1,7 @@
 from http import HTTPStatus
 from typing import List
 
+from django.db import models
 from django.shortcuts import get_object_or_404
 from ninja import Schema, Router
 
@@ -20,14 +21,27 @@ class FormaPagamentoIn(Schema):
 router = Router()
 
 
-@router.get("/{forma_pagamento_id}", response=FormaPagamentoOut)
-def find_by_id(_, forma_pagamento_id: int):
-    return get_object_or_404(FormaPagamento, id=forma_pagamento_id)
+def create_crud(model: models.Model, schema: Schema, out_schema: Schema):
+    router.get("/{pk}", response=FormaPagamentoOut)(
+        lambda _, pk: get_object_or_404(model, id=pk)
+    )
+
+    router.get("/", response=List[out_schema])(
+        lambda _: model.objects.all()
+    )
 
 
-@router.get("/", response={HTTPStatus.OK: List[FormaPagamentoOut]})
-def find_all(_):
-    return FormaPagamento.objects.all()
+create_crud(FormaPagamento, FormaPagamentoIn, FormaPagamentoOut)
+
+
+# @router.get("/{forma_pagamento_id}", response=FormaPagamentoOut)
+# def find_by_id(_, forma_pagamento_id: int):
+#     return get_object_or_404(FormaPagamento, id=forma_pagamento_id)
+#
+#
+# @router.get("/", response={HTTPStatus.OK: List[FormaPagamentoOut]})
+# def find_all(_):
+#     return FormaPagamento.objects.all()
 
 
 @router.post("/", response={HTTPStatus.CREATED: FormaPagamentoOut})
