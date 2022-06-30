@@ -17,7 +17,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'rc-financeiro.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'rc-financeiro.herokuapp.com', '170.187.154.176', 'financeiro.renatocustodio.dev']
 
 # Application definition
 
