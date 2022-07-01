@@ -1,11 +1,7 @@
-from http import HTTPStatus
-from typing import List
-
-from django.shortcuts import get_object_or_404
 from ninja import Schema, Router
 from pydantic import EmailStr
 
-from utils.api_utils import dict_to_model
+from .rest import create_crud
 from ..models.pessoa import Pessoa
 
 
@@ -27,33 +23,4 @@ class PessoaIn(Schema):
 
 
 router = Router()
-
-
-@router.get("/{pessoa_id}", response=PessoaOut)
-def find_by_id(_, pessoa_id: int):
-    return get_object_or_404(Pessoa, id=pessoa_id)
-
-
-@router.get("/", response={HTTPStatus.OK: List[PessoaOut], HTTPStatus.NO_CONTENT: None})
-def find_all(_):
-    return Pessoa.objects.all()
-
-
-@router.post("/", response={HTTPStatus.CREATED: PessoaOut})
-def create_pessoa(_, payload: PessoaIn):
-    pessoa = Pessoa(**payload.dict())
-    pessoa.save()
-    return pessoa
-
-
-@router.put("/{pessoa_id}", response={HTTPStatus.OK: PessoaOut})
-def update_pessoa(_, pessoa_id: int, payload: PessoaIn):
-    pessoa = get_object_or_404(Pessoa, id=pessoa_id)
-    dict_to_model(payload.dict(), pessoa)
-    pessoa.save()
-    return pessoa
-
-
-@router.delete("/{pessoa_id}", response={HTTPStatus.OK: None})
-def delete_pessoa(_, pessoa_id: int):
-    get_object_or_404(Pessoa, id=pessoa_id).delete()
+create_crud(router, Pessoa, PessoaIn, PessoaOut)
