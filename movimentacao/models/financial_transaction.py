@@ -6,23 +6,23 @@ from movimentacao.messages import MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO, \
     MOVIMENTACAO_FINANCEIRA_FORMA_PAGAMENTO_OBRIGATORIO, MOVIMENTACAO_FINANCEIRA_VALOR_OBRIGATORIO, \
     MOVIMENTACAO_FINANCEIRA_VALOR_NEGATIVO, MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_OBRIGATORIO
 from movimentacao.models.base import BaseModel
-from movimentacao.models.evento import Evento
-from movimentacao.models.forma_pagamento import FormaPagamento
-from movimentacao.models.tipo_lancamento import TipoLancamento
+from movimentacao.models.event import Event
+from movimentacao.models.financial_transaction_type import FinancialTransactionType
+from movimentacao.models.payment_method import PaymentMethod
 
 
-class MovimentacaoFinanceira(BaseModel):
-    evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
-    forma_pagamento = models.ForeignKey(FormaPagamento, on_delete=models.PROTECT)
+class FinancialTransaction(BaseModel):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT)
     valor = models.DecimalField(max_digits=9, decimal_places=2)
     data_lancamento = models.DateTimeField()
-    tipo_lancamento = models.CharField(max_length=1, choices=TipoLancamento.choices)
+    financial_transaction_type = models.CharField(max_length=6, choices=FinancialTransactionType.choices)
 
     def before_save(self):
-        if not self.evento_id:
+        if not self.event_id:
             raise MovimentacaoError(MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO)
 
-        if not self.forma_pagamento_id:
+        if not self.payment_method_id:
             raise MovimentacaoError(MOVIMENTACAO_FINANCEIRA_FORMA_PAGAMENTO_OBRIGATORIO)
 
         if not self.valor:
@@ -31,16 +31,16 @@ class MovimentacaoFinanceira(BaseModel):
         if self.valor < 0:
             raise MovimentacaoError(MOVIMENTACAO_FINANCEIRA_VALOR_NEGATIVO)
 
-        if not self.tipo_lancamento:
+        if not self.financial_transaction_type:
             raise MovimentacaoError(MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_OBRIGATORIO)
 
         if not self.data_lancamento:
             self.data_lancamento = timezone.now()
 
     def __str__(self):
-        return f'{self.evento.tipo_evento.descricao} ' \
-               f'{self.evento.cliente}, ' \
-               f'{self.tipo_lancamento} ' \
+        return f'{self.event.event_type.descricao} ' \
+               f'{self.event.cliente}, ' \
+               f'{self.financial_transaction_type} ' \
                f'{self.valor} no ' \
-               f'{self.forma_pagamento} em ' \
+               f'{self.payment_method} em ' \
                f'{self.data_lancamento}'

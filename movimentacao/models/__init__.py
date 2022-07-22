@@ -1,6 +1,6 @@
-from . import motivo_cancelamento, \
-    forma_pagamento, \
-    movimentacao_financeira, \
-    pessoa, \
-    tipo_evento, \
-    evento
+from . import cancelation_reason, \
+    payment_method, \
+    financial_transaction, \
+    person, \
+    event_type, \
+    event

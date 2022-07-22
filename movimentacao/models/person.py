@@ -6,7 +6,7 @@ from movimentacao.models.base import BaseModel
 from utils.string_utils import is_empty
 
 
-class Pessoa(BaseModel):
+class Person(BaseModel):
     nome = models.CharField(max_length=200, blank=False)
     email = models.EmailField(null=True, blank=True)
     fone = models.CharField(null=True, max_length=20, blank=True)

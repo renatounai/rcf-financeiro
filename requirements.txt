@@ -1,4 +1,4 @@
-Django==4.0.5
+Django==4.0.6
 django-ninja==0.17.0
 psycopg2-binary
 gunicorn

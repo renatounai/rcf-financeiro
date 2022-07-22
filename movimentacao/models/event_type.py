@@ -5,7 +5,7 @@ from movimentacao.models.base import BaseModel
 from movimentacao.services.base import validate_description
 
 
-class TipoEvento(BaseModel):
+class EventType(BaseModel):
     descricao = models.CharField(max_length=100, unique=True)
 
     def before_save(self):

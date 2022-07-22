@@ -7,7 +7,7 @@ from auth.user_rest import User
 APPLICATION_JSON = "application/json"
 
 
-class EventoTest(TestCase):
+class EventTest(TestCase):
 
     def test_login(self):
         user_service.create_account(User(email="username@gmail.com", password="123456"))

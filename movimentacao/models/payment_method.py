@@ -5,7 +5,7 @@ from movimentacao.models.base import BaseModel
 from movimentacao.services.base import validate_description
 
 
-class FormaPagamento(BaseModel):
+class PaymentMethod(BaseModel):
     descricao = models.CharField(max_length=30, blank=False, unique=True, null=False)
 
     def before_save(self):

@@ -2,10 +2,10 @@ from ninja import Schema, Router
 from pydantic import EmailStr
 
 from .rest import create_crud
-from ..models.pessoa import Pessoa
+from ..models.person import Person
 
 
-class PessoaOut(Schema):
+class PersonOut(Schema):
     id: int
     nome: str
     email: EmailStr = None
@@ -14,7 +14,7 @@ class PessoaOut(Schema):
     facebook_user: str = None
 
 
-class PessoaIn(Schema):
+class PersonIn(Schema):
     nome: str
     email: EmailStr = None
     fone: str = None
@@ -23,4 +23,4 @@ class PessoaIn(Schema):
 
 
 router = Router()
-create_crud(router, Pessoa, PessoaIn, PessoaOut)
+create_crud(router, Person, PersonIn, PersonOut)
