@@ -1,5 +1,6 @@
 from ninja.errors import ValidationError
 
+from apps.financial_transaction.exceptions import FinancialTransactionError
 from utils.string_utils import is_empty
 
 
@@ -12,4 +13,4 @@ def validate_description(object_with_description, msg_obrigatorio, msg_repeated)
         .exclude(id=object_with_description.id)\
         .exists()
     if exists:
-        raise ValidationError(msg_repeated)
+        raise FinancialTransactionError.FinancialTransactionError(msg_repeated)

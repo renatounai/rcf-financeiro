@@ -3,6 +3,7 @@ from django.test import TestCase
 from ninja.errors import ValidationError
 
 from apps.financial_transaction.endpoints.cancelation_reason_rest import CancelationReasonIn
+from apps.financial_transaction.exceptions.FinancialTransactionError import FinancialTransactionError
 from apps.financial_transaction.messages import MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO, MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA
 from apps.financial_transaction.models.cancelation_reason import CancelationReason
 
@@ -89,13 +90,13 @@ class CancelationReasonTest(TestCase):
 
     def test_repeated_description(self):
         CancelationReason.objects.create(descricao="Sem dinheiro")
-        with self.assertRaises(ValidationError, msg=MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA):
+        with self.assertRaises(FinancialTransactionError, msg=MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA):
             CancelationReason(descricao="Sem dinheiro").save()
 
     def test_repeated_description_on_update(self):
         CancelationReason.objects.create(descricao="Sem dinheiro")
         viajou = CancelationReason.objects.create(descricao="Viajou")
 
-        with self.assertRaises(ValidationError, msg=MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA):
+        with self.assertRaises(FinancialTransactionError, msg=MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA):
             viajou.descricao = "Sem dinheiro"
             viajou.save()

@@ -91,14 +91,14 @@ class PaymentMethodTest(TestCase):
 
     def test_repeated_description(self):
         PaymentMethod(descricao="Pix").save()
-        with self.assertRaises(ValidationError, msg=FORMA_PAGAMENTO_DESCRICAO_REPETIDA):
+        with self.assertRaises(FinancialTransactionError, msg=FORMA_PAGAMENTO_DESCRICAO_REPETIDA):
             PaymentMethod(descricao="Pix").save()
 
     def test_repeated_description_on_update(self):
         PaymentMethod.objects.create(descricao="Pix")
         dinheiro = PaymentMethod.objects.create(descricao="Dinheiro")
 
-        with self.assertRaises(ValidationError, msg=FORMA_PAGAMENTO_DESCRICAO_REPETIDA):
+        with self.assertRaises(FinancialTransactionError, msg=FORMA_PAGAMENTO_DESCRICAO_REPETIDA):
             dinheiro.descricao = "Pix"
             dinheiro.save()
 

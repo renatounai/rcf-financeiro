@@ -3,6 +3,7 @@ from django.test import TestCase
 from ninja.errors import ValidationError
 
 from apps.financial_transaction.endpoints.event_type_rest import EventTypeIn
+from apps.financial_transaction.exceptions.FinancialTransactionError import FinancialTransactionError
 from apps.financial_transaction.messages import TIPO_EVENTO_DESCRICAO_REPETIDA, \
     TIPO_EVENTO_DESCRICAO_OBRIGATORIO
 from apps.financial_transaction.models.event_type import EventType
@@ -90,13 +91,13 @@ class EventTypeTest(TestCase):
 
     def test_repeated_description(self):
         EventType.objects.create(descricao="Boudoir")
-        with self.assertRaises(ValidationError, msg=TIPO_EVENTO_DESCRICAO_REPETIDA):
+        with self.assertRaises(FinancialTransactionError, msg=TIPO_EVENTO_DESCRICAO_REPETIDA):
             EventType(descricao="Boudoir").save()
 
     def test_repeated_description_on_update(self):
         EventType.objects.create(descricao="Boudoir")
         gestante = EventType.objects.create(descricao="Gestante")
 
-        with self.assertRaises(ValidationError, msg=TIPO_EVENTO_DESCRICAO_REPETIDA):
+        with self.assertRaises(FinancialTransactionError, msg=TIPO_EVENTO_DESCRICAO_REPETIDA):
             gestante.descricao = "Boudoir"
             gestante.save()
