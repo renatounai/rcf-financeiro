@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User as UserModel
 from django.test import TestCase
 
-from auth import user_service
-from auth.user_rest import User
+from apps.financial_transaction.auth import user_service
+from apps.financial_transaction.auth.user_rest import User
 
 APPLICATION_JSON = "application/json"
 

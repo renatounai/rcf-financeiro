@@ -2,12 +2,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 from ninja.errors import ValidationError
 
-from movimentacao.endpoints.payment_method_rest import PaymentMethodIn
-from movimentacao.exceptions.MovimentacaoError import MovimentacaoError
-from movimentacao.messages import FORMA_PAGAMENTO_DESCRICAO_REPETIDA, FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA, \
+from apps.financial_transaction.endpoints.payment_method_rest import PaymentMethodIn
+from apps.financial_transaction.exceptions.FinancialTransactionError import FinancialTransactionError
+from apps.financial_transaction.messages import FORMA_PAGAMENTO_DESCRICAO_REPETIDA, FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA, \
     EVENTO_NOT_FOUND
-from movimentacao.models.event import Event
-from movimentacao.models.payment_method import PaymentMethod
+from apps.financial_transaction.models.event import Event
+from apps.financial_transaction.models.payment_method import PaymentMethod
 
 APPLICATION_JSON = "application/json"
 
@@ -103,5 +103,5 @@ class PaymentMethodTest(TestCase):
             dinheiro.save()
 
     def test_get_event_not_exists(self):
-        with self.assertRaises(MovimentacaoError, msg=EVENTO_NOT_FOUND):
+        with self.assertRaises(FinancialTransactionError, msg=EVENTO_NOT_FOUND):
             Event.get(1)

@@ -1,9 +1,9 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
-from movimentacao.endpoints.person_rest import PersonIn
-from movimentacao.messages import PESSOA_NOME_OBRIGATORIO
-from movimentacao.models.person import Person
+from apps.financial_transaction.endpoints.person_rest import PersonIn
+from apps.financial_transaction.messages import PESSOA_NOME_OBRIGATORIO
+from apps.financial_transaction.models.person import Person
 
 APPLICATION_JSON = "application/json"
 

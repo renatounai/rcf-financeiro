@@ -1,6 +1,6 @@
 from django.test import SimpleTestCase
 
-from movimentacao.models.person import Person
+from apps.financial_transaction.models.person import Person
 from utils.model_utils import is_model_empty
 
 

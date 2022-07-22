@@ -1,8 +1,8 @@
 from django.db import models
 
-from movimentacao.messages import MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO, MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA
-from movimentacao.models.base import BaseModel
-from movimentacao.services.base import validate_description
+from apps.financial_transaction.messages import MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO, MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA
+from apps.financial_transaction.models.base import BaseModel
+from apps.financial_transaction.services.base import validate_description
 
 
 class CancelationReason(BaseModel):

@@ -1,14 +1,14 @@
 from django.db import models
 from django.utils import timezone
 
-from movimentacao.exceptions.MovimentacaoError import MovimentacaoError
-from movimentacao.messages import MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO, \
+from apps.financial_transaction.exceptions.FinancialTransactionError import FinancialTransactionError
+from apps.financial_transaction.messages import MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO, \
     MOVIMENTACAO_FINANCEIRA_FORMA_PAGAMENTO_OBRIGATORIO, MOVIMENTACAO_FINANCEIRA_VALOR_OBRIGATORIO, \
     MOVIMENTACAO_FINANCEIRA_VALOR_NEGATIVO, MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_OBRIGATORIO
-from movimentacao.models.base import BaseModel
-from movimentacao.models.event import Event
-from movimentacao.models.financial_transaction_type import FinancialTransactionType
-from movimentacao.models.payment_method import PaymentMethod
+from apps.financial_transaction.models.base import BaseModel
+from apps.financial_transaction.models.event import Event
+from apps.financial_transaction.models.financial_transaction_type import FinancialTransactionType
+from apps.financial_transaction.models.payment_method import PaymentMethod
 
 
 class FinancialTransaction(BaseModel):
@@ -20,19 +20,19 @@ class FinancialTransaction(BaseModel):
 
     def before_save(self):
         if not self.event_id:
-            raise MovimentacaoError(MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO)
+            raise FinancialTransactionError(MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO)
 
         if not self.payment_method_id:
-            raise MovimentacaoError(MOVIMENTACAO_FINANCEIRA_FORMA_PAGAMENTO_OBRIGATORIO)
+            raise FinancialTransactionError(MOVIMENTACAO_FINANCEIRA_FORMA_PAGAMENTO_OBRIGATORIO)
 
         if not self.valor:
-            raise MovimentacaoError(MOVIMENTACAO_FINANCEIRA_VALOR_OBRIGATORIO)
+            raise FinancialTransactionError(MOVIMENTACAO_FINANCEIRA_VALOR_OBRIGATORIO)
 
         if self.valor < 0:
-            raise MovimentacaoError(MOVIMENTACAO_FINANCEIRA_VALOR_NEGATIVO)
+            raise FinancialTransactionError(MOVIMENTACAO_FINANCEIRA_VALOR_NEGATIVO)
 
         if not self.financial_transaction_type:
-            raise MovimentacaoError(MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_OBRIGATORIO)
+            raise FinancialTransactionError(MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_OBRIGATORIO)
 
         if not self.data_lancamento:
             self.data_lancamento = timezone.now()

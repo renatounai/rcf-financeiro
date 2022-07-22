@@ -1,8 +1,8 @@
 from django.db import models
 from ninja.errors import ValidationError
 
-from movimentacao.messages import PESSOA_NOME_OBRIGATORIO
-from movimentacao.models.base import BaseModel
+from apps.financial_transaction.messages import PESSOA_NOME_OBRIGATORIO
+from apps.financial_transaction.models.base import BaseModel
 from utils.string_utils import is_empty
 
 

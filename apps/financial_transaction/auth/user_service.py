@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 
-from movimentacao.exceptions.MovimentacaoError import MovimentacaoError
+from apps.financial_transaction.exceptions.FinancialTransactionError import FinancialTransactionError
 
 
 def create_account(user: User) -> User:
@@ -9,13 +9,13 @@ def create_account(user: User) -> User:
     """
 
     if not user.password:
-        raise MovimentacaoError("A senha é obrigatória!")
+        raise FinancialTransactionError("A senha é obrigatória!")
 
     if not user.email:
-        raise MovimentacaoError("O e-email é obrigatório!")
+        raise FinancialTransactionError("O e-email é obrigatório!")
 
     if User.objects.filter(username=user.email).exists():
-        raise MovimentacaoError("Já existe um usuário com este e-mail!")
+        raise FinancialTransactionError("Já existe um usuário com este e-mail!")
 
     return User.objects.create_user(user.email, user.email, user.password)
 

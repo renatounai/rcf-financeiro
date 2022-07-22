@@ -5,13 +5,13 @@ from django.db import models
 from django.shortcuts import get_object_or_404
 from ninja.errors import ValidationError
 
-from movimentacao.exceptions.MovimentacaoError import MovimentacaoError
-from movimentacao.messages import EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELED, EVENTO_NOT_FOUND
-from movimentacao.models.base import BaseModel
-from movimentacao.models.cancelation_reason import CancelationReason
-from movimentacao.models.event_status import EventStatus
-from movimentacao.models.event_type import EventType
-from movimentacao.models.person import Person
+from apps.financial_transaction.exceptions.FinancialTransactionError import FinancialTransactionError
+from apps.financial_transaction.messages import EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELED, EVENTO_NOT_FOUND
+from apps.financial_transaction.models.base import BaseModel
+from apps.financial_transaction.models.cancelation_reason import CancelationReason
+from apps.financial_transaction.models.event_status import EventStatus
+from apps.financial_transaction.models.event_type import EventType
+from apps.financial_transaction.models.person import Person
 from utils.string_utils import is_not_empty
 
 
@@ -91,7 +91,7 @@ class Event(BaseModel):
         try:
             return cls.objects.get(pk=pk)
         except ObjectDoesNotExist:
-            raise MovimentacaoError(EVENTO_NOT_FOUND)
+            raise FinancialTransactionError(EVENTO_NOT_FOUND)
 
     def _set_cancelation_reason(self, event_in):
         if event_in.cancelation_reason_id is None and is_not_empty(event_in.cancelation_reason_descricao):

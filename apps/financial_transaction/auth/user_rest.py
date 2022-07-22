@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from ninja import Schema, Router
 
-from auth import user_service
+from apps.financial_transaction.auth import user_service
 
 
 class User(Schema):

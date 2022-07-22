@@ -2,9 +2,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 from ninja.errors import ValidationError
 
-from movimentacao.endpoints.cancelation_reason_rest import CancelationReasonIn
-from movimentacao.messages import MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO, MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA
-from movimentacao.models.cancelation_reason import CancelationReason
+from apps.financial_transaction.endpoints.cancelation_reason_rest import CancelationReasonIn
+from apps.financial_transaction.messages import MOTIVO_CANCELAMENTO_DESCRICAO_OBRIGATORIO, MOTIVO_CANCELAMENTO_DESCRICAO_REPETIDA
+from apps.financial_transaction.models.cancelation_reason import CancelationReason
 
 APPLICATION_JSON = "application/json"
 

@@ -2,10 +2,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 from ninja.errors import ValidationError
 
-from movimentacao.endpoints.event_type_rest import EventTypeIn
-from movimentacao.messages import TIPO_EVENTO_DESCRICAO_REPETIDA, \
+from apps.financial_transaction.endpoints.event_type_rest import EventTypeIn
+from apps.financial_transaction.messages import TIPO_EVENTO_DESCRICAO_REPETIDA, \
     TIPO_EVENTO_DESCRICAO_OBRIGATORIO
-from movimentacao.models.event_type import EventType
+from apps.financial_transaction.models.event_type import EventType
 
 APPLICATION_JSON = "application/json"
 

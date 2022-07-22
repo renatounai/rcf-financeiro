@@ -4,12 +4,12 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
-from movimentacao.messages import EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELED
-from movimentacao.models.cancelation_reason import CancelationReason
-from movimentacao.models.event import Event
-from movimentacao.models.event_status import EventStatus
-from movimentacao.models.event_type import EventType
-from movimentacao.models.person import Person
+from apps.financial_transaction.messages import EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELED
+from apps.financial_transaction.models.cancelation_reason import CancelationReason
+from apps.financial_transaction.models.event import Event
+from apps.financial_transaction.models.event_status import EventStatus
+from apps.financial_transaction.models.event_type import EventType
+from apps.financial_transaction.models.person import Person
 
 APPLICATION_JSON = "application/json"
 

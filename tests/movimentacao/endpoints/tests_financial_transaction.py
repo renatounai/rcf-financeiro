@@ -6,17 +6,17 @@ from django.test import TestCase
 from django.utils import timezone
 from pydantic.datetime_parse import timezone
 
-from movimentacao.endpoints.financial_transaction_rest import FinancialTransactionIn
-from movimentacao.exceptions.MovimentacaoError import MovimentacaoError
-from movimentacao.messages import MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO, \
+from apps.financial_transaction.endpoints.financial_transaction_rest import FinancialTransactionIn
+from apps.financial_transaction.exceptions.FinancialTransactionError import FinancialTransactionError
+from apps.financial_transaction.messages import MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO, \
     MOVIMENTACAO_FINANCEIRA_FORMA_PAGAMENTO_OBRIGATORIO, MOVIMENTACAO_FINANCEIRA_VALOR_OBRIGATORIO, \
     MOVIMENTACAO_FINANCEIRA_VALOR_NEGATIVO, MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_OBRIGATORIO
-from movimentacao.models.event import Event
-from movimentacao.models.event_type import EventType
-from movimentacao.models.financial_transaction import FinancialTransaction
-from movimentacao.models.financial_transaction_type import FinancialTransactionType
-from movimentacao.models.payment_method import PaymentMethod
-from movimentacao.models.person import Person
+from apps.financial_transaction.models.event import Event
+from apps.financial_transaction.models.event_type import EventType
+from apps.financial_transaction.models.financial_transaction import FinancialTransaction
+from apps.financial_transaction.models.financial_transaction_type import FinancialTransactionType
+from apps.financial_transaction.models.payment_method import PaymentMethod
+from apps.financial_transaction.models.person import Person
 
 JSON_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
@@ -196,35 +196,35 @@ class FinancialTransactionTest(TestCase):
     def test_shoud_raise_error_if_missing_event(self):
         financial_transaction = FinancialTransaction()
 
-        with self.assertRaises(MovimentacaoError, msg=MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO):
+        with self.assertRaises(FinancialTransactionError, msg=MOVIMENTACAO_FINANCEIRA_EVENTO_OBRIGATORIO):
             financial_transaction.save()
 
     def test_shoud_raise_error_if_missing_payment_method(self):
         financial_transaction = FinancialTransaction(event_id=1)
 
-        with self.assertRaises(MovimentacaoError, msg=MOVIMENTACAO_FINANCEIRA_FORMA_PAGAMENTO_OBRIGATORIO):
+        with self.assertRaises(FinancialTransactionError, msg=MOVIMENTACAO_FINANCEIRA_FORMA_PAGAMENTO_OBRIGATORIO):
             financial_transaction.save()
 
     def test_shoud_raise_error_if_missing_valor(self):
         financial_transaction = FinancialTransaction(event_id=1, payment_method_id=1)
 
-        with self.assertRaises(MovimentacaoError, msg=MOVIMENTACAO_FINANCEIRA_VALOR_OBRIGATORIO):
+        with self.assertRaises(FinancialTransactionError, msg=MOVIMENTACAO_FINANCEIRA_VALOR_OBRIGATORIO):
             financial_transaction.save()
 
     def test_shoud_raise_error_if_valor_is_zero(self):
         financial_transaction = FinancialTransaction(event_id=1, payment_method_id=1, valor=0)
 
-        with self.assertRaises(MovimentacaoError, msg=MOVIMENTACAO_FINANCEIRA_VALOR_OBRIGATORIO):
+        with self.assertRaises(FinancialTransactionError, msg=MOVIMENTACAO_FINANCEIRA_VALOR_OBRIGATORIO):
             financial_transaction.save()
 
     def test_shoud_raise_error_if_valor_is_less_than_zero(self):
         financial_transaction = FinancialTransaction(event_id=1, payment_method_id=1, valor=-10)
 
-        with self.assertRaises(MovimentacaoError, msg=MOVIMENTACAO_FINANCEIRA_VALOR_NEGATIVO):
+        with self.assertRaises(FinancialTransactionError, msg=MOVIMENTACAO_FINANCEIRA_VALOR_NEGATIVO):
             financial_transaction.save()
 
     def test_shoud_raise_error_if_missing_financial_transaction_type(self):
         financial_transaction = FinancialTransaction(event_id=1, payment_method_id=1, valor=10)
 
-        with self.assertRaises(MovimentacaoError, msg=MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_OBRIGATORIO):
+        with self.assertRaises(FinancialTransactionError, msg=MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_OBRIGATORIO):
             financial_transaction.save()

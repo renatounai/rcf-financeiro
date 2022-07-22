@@ -17,7 +17,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'rc-financeiro.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'rc-project.herokuapp.com']
 
 # Application definition
 
@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'ninja',
-    'movimentacao',
+    'apps.financial_transaction',
 ]
 
 MIDDLEWARE = [
@@ -41,7 +41,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'financeiro.urls'
+ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
     {
@@ -59,7 +59,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'financeiro.wsgi.application'
+WSGI_APPLICATION = 'project.wsgi.application'
 
 
 # Database
