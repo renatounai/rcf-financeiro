@@ -1,48 +1,12 @@
-from datetime import datetime
 from http import HTTPStatus
 from typing import List
 
 from django.shortcuts import get_object_or_404
-from ninja import Router, Schema
+from ninja import Router
 
+from utils.api_utils import dict_to_model
+from .schemas import EventOut, EventIn, CancelamentoIn
 from ..models.event import Event
-from ..models.event_status import EventStatus
-
-
-class ClienteOut(Schema):
-    id: int
-    nome: str
-
-
-class EventOut(Schema):
-    id: int
-    agendado_para: datetime = None
-    valor_cobrado: float = None
-    quitado: bool
-    status: EventStatus
-    url_galeria: str = None
-    cliente: ClienteOut
-    event_type_id: int
-
-
-class EventIn(Schema):
-    valor_cobrado: float = None
-    quitado: bool
-    status: EventStatus
-    gratuito: bool
-    cliente_id: int = None
-    cliente_nome: str = None
-    event_type_id: int = None
-    event_type_descricao: str = None
-    cancelation_reason_id: int = None
-    cancelation_reason_descricao: str = None
-    agendado_para: datetime = None
-    url_galeria: str = None
-
-
-class CancelamentoIn(Schema):
-    cancelation_reason_id: int = None
-    cancelation_reason_descricao: str = None
 
 
 router = Router()
@@ -60,19 +24,23 @@ def find_all(_):
 
 @router.post("/", response={HTTPStatus.CREATED: EventOut})
 def create_event(_, payload: EventIn):
-    return Event.save_event_in(payload)
+    event = Event(**payload.dict())
+    event.save()
+    return event
 
 
 @router.put("/{event_id}", response={HTTPStatus.OK: EventOut})
 def update_event(_, event_id: int, payload: EventIn):
-    event = Event.save_event_in(payload, event_id)
+    event = get_object_or_404(Event, id=event_id)
+    dict_to_model(payload.dict(), event)
+    event.save()
     return event
 
 
-@router.put("/cancelar/{event_id}", response={HTTPStatus.OK: EventOut})
+@router.put("/cancelar/{event_id}", response={HTTPStatus.NO_CONTENT: None})
 def cancelar_event(_, event_id: int, cancelamento_in: CancelamentoIn):
     event = Event.get(event_id)
-    return event.cancelar(cancelamento_in)
+    event.cancelar(cancelamento_in)
 
 
 @router.delete("/{event_id}", response={HTTPStatus.OK: None})

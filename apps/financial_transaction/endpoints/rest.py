@@ -1,9 +1,8 @@
 from http import HTTPStatus
 from typing import List
 
-from django.db import models
 from django.shortcuts import get_object_or_404
-from ninja import Schema, Router
+from ninja import Router
 
 from utils.api_utils import dict_to_model
 
@@ -43,7 +42,7 @@ def post(router: Router, model, schema_in, schema_out):
         return m
 
 
-def create_crud(router: Router, model: models.Model, schema_in: Schema, schema_out: Schema):
+def create_crud(router: Router, model: type, schema_in: type, schema_out: type):
     get_one(router, model, schema_out)
     get_all(router, model, schema_out)
     post(router, model, schema_in, schema_out)

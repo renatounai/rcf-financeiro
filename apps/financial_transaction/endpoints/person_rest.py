@@ -1,25 +1,8 @@
-from ninja import Schema, Router
-from pydantic import EmailStr
+from ninja import Router
 
 from .rest import create_crud
+from .schemas import PersonIn, PersonOut
 from ..models.person import Person
-
-
-class PersonOut(Schema):
-    id: int
-    nome: str
-    email: EmailStr = None
-    fone: str = None
-    instagram_user: str = None
-    facebook_user: str = None
-
-
-class PersonIn(Schema):
-    nome: str
-    email: EmailStr = None
-    fone: str = None
-    instagram_user: str = None
-    facebook_user: str = None
 
 
 router = Router()

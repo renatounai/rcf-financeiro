@@ -1,16 +1,8 @@
-from ninja import Schema, Router
+from ninja import Router
 
 from .rest import create_crud
+from .schemas import CancelationReasonIn, CancelationReasonOut
 from ..models.cancelation_reason import CancelationReason
-
-
-class CancelationReasonOut(Schema):
-    id: int
-    descricao: str
-
-
-class CancelationReasonIn(Schema):
-    descricao: str
 
 
 router = Router()

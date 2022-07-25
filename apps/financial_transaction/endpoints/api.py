@@ -31,7 +31,7 @@ def validation_custom_errors(request, exc):
 def validation_django_errors(request, exc):
     return api.create_response(
         request,
-        {"detail": exc.messages[0]},
+        {"detail": str(exc)},
         status=400,
     )
 

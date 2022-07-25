@@ -154,7 +154,7 @@ class FinancialTransactionTest(TestCase):
             content_type="application/json")
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()["detail"], "A instância de event com id 100 não existe.")
+        self.assertTrue("A instância de event com id 100 não existe." in response.json()["detail"])
 
     def test_should_update_a_financial_transaction(self):
         financial_transaction = FinancialTransaction.objects.create(

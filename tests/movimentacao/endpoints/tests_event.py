@@ -29,64 +29,15 @@ class EventTest(TestCase):
 
         event_in = {
             "quitado": False,
+            "gratuito": False,
             "status": EventStatus.NEGOTIATING,
-            "gratuito": False,
-            "cliente_id": person.id,
-            "event_type_id": event_type.id
-        }
-
-        response = self.client.post("/api/events/", event_in, content_type=APPLICATION_JSON)
-        self.assertEqual(response.status_code, 201)
-
-    def test_should_create_an_event_with_only_cliente_name(self):
-        event_type = EventType(descricao="Boudoir")
-        event_type.save()
-
-        event_in = {
-            "quitado": False,
-            "status": EventStatus.NEGOTIATING,
-            "gratuito": False,
-            "cliente_nome": "Renato",
-            "event_type_id": event_type.id
-        }
-
-        response = self.client.post("/api/events/", event_in, content_type=APPLICATION_JSON)
-        self.assertEqual(response.status_code, 201)
-        self.assertTrue('Renato', response.json()["cliente"]["nome"])
-
-    def test_should_create_an_event_with_only_cancelation_reason_descricao(self):
-        event_type = EventType(descricao="Boudoir")
-        event_type.save()
-
-        person = Person(nome="Renato")
-        person.save()
-
-        event_in = {
-            "quitado": False,
-            "status": EventStatus.CANCELED,
-            "gratuito": False,
             "cliente_id": person.id,
             "event_type_id": event_type.id,
-            "cancelation_reason_descricao": "Falta de dinheiro"
+            "valor_cobrado": 100.00,
         }
 
         response = self.client.post("/api/events/", event_in, content_type=APPLICATION_JSON)
-        self.assertEqual(response.status_code, 201)
-
-    def test_should_create_an_event_with_only_event_type_descricao(self):
-        person = Person(nome="Renato")
-        person.save()
-
-        event_in = {
-            "quitado": False,
-            "status": EventStatus.CANCELED,
-            "gratuito": False,
-            "cliente_id": person.id,
-            "event_type_descricao": 'Batizado',
-            "cancelation_reason_descricao": "Falta de dinheiro"
-        }
-
-        response = self.client.post("/api/events/", event_in, content_type=APPLICATION_JSON)
+        print(response.json())
         self.assertEqual(response.status_code, 201)
 
     def test_deve_lancar_erro_ao_informar_cancelation_reason_quando_nao_cancelado(self):
@@ -119,12 +70,12 @@ class EventTest(TestCase):
         event.save()
 
         cancelamento_in = {
-            "cancelation_reason_id": None,
-            "cancelation_reason_descricao": "Falta de dinheiro"
+            "id": None,
+            "description": "Falta de dinheiro"
         }
 
         response = self.client.put(f"/api/events/cancelar/{event.id}", cancelamento_in, content_type=APPLICATION_JSON)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 204)
         event = Event.objects.get(id=event.id)
         self.assertTrue(EventStatus.CANCELED, event.status)
 
@@ -138,12 +89,12 @@ class EventTest(TestCase):
         cancelation_reason.save()
 
         cancelamento_in = {
-            "cancelation_reason_id": cancelation_reason.id,
-            "cancelation_reason_descricao": None
+            "id": cancelation_reason.id,
+            "description": None
         }
 
         response = self.client.put(f"/api/events/cancelar/{event.id}", cancelamento_in, content_type=APPLICATION_JSON)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 204)
         event = Event.objects.get(id=event.id)
         self.assertTrue(EventStatus.CANCELED, event.status)
 
@@ -253,8 +204,8 @@ class EventTest(TestCase):
             "status": event_saved.status,
             "gratuito": event_saved.gratuito,
             "cliente_id": event_saved.cliente_id,
+            "valor_cobrado": event_saved.valor_cobrado,
             "event_type_id": event_type_casamento.id,
-            "cancelation_reason_id": event_saved.cancelation_reason_id
         }
 
         response = self.client.put(f"/api/events/{event_saved.id}", event_in,
