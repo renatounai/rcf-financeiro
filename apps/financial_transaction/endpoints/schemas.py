@@ -8,20 +8,20 @@ from apps.financial_transaction.models.financial_transaction_type import Financi
 
 class EventTypeOut(Schema):
     id: int
-    descricao: str
+    description: str
 
 
 class EventTypeIn(Schema):
-    descricao: str
+    description: str
 
 
 class CancelationReasonOut(Schema):
     id: int
-    descricao: str
+    description: str
 
 
 class CancelationReasonIn(Schema):
-    descricao: str
+    description: str
 
 
 class EventType(Schema):
@@ -38,66 +38,64 @@ class FinancialTransactionOut(Schema):
     id: int
     event_id: int
     payment_method_id: int
-    valor: float
-    data_lancamento: datetime
+    amount: float
+    date: datetime
     financial_transaction_type: FinancialTransactionType
 
 
 class FinancialTransactionIn(Schema):
     event_id: int
     payment_method_id: int
-    valor: float
+    amount: float
     financial_transaction_type: FinancialTransactionType
-    data_lancamento: datetime = None
+    date: datetime = None
 
 
 class PaymentMethodOut(Schema):
     id: int
-    descricao: str
+    description: str
 
 
 class PaymentMethodIn(Schema):
-    descricao: str
+    description: str
 
 
 class PersonOut(Schema):
     id: int
-    nome: str
+    name: str
     email: EmailStr = None
-    fone: str = None
+    phone: str = None
     instagram_user: str = None
     facebook_user: str = None
 
 
 class PersonIn(Schema):
-    nome: str
+    name: str
     email: EmailStr = None
-    fone: str = None
+    phone: str = None
     instagram_user: str = None
     facebook_user: str = None
 
 
 class EventIn(Schema):
-    valor_cobrado: float = None
-    quitado: bool
+    amount_charged: float = None
+    paid: bool
     status: EventStatus
-    gratuito: bool
-    cliente_id: int
+    clients_id: int
     cancelation_reason_id: int = None
     event_type_id: int
-    agendado_para: datetime = None
-    url_galeria: str = None
+    scheduled_to: datetime = None
+    gallery_url: str = None
 
 
 class EventOut(Schema):
     id: int
-    valor_cobrado: float
-    quitado: bool
+    amount_charged: float
+    paid: bool
     status: EventStatus
-    cliente_id: int
-    cliente: PersonOut
+    clients_id: int
+    clients: PersonOut
     event_type_id: int
-    gratuito: bool
-    url_galeria: str = None
+    gallery_url: str = None
     cancelation_reason: int = None
-    agendado_para: datetime = None
+    scheduled_to: datetime = None

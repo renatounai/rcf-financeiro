@@ -5,8 +5,8 @@ from utils.string_utils import is_not_empty, is_empty
 
 class Test(TestCase):
     def test_is_not_empty(self):
-        nome = 'Renato'
-        self.assertTrue(is_not_empty(nome))
+        name = 'Renato'
+        self.assertTrue(is_not_empty(name))
 
     def test_is_empty(self):
         text = ''

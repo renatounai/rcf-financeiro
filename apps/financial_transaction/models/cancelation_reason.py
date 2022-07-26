@@ -6,7 +6,7 @@ from apps.financial_transaction.services.base import validate_description
 
 
 class CancelationReason(BaseModel):
-    descricao = models.CharField(max_length=200, unique=True)
+    description = models.CharField(max_length=200, unique=True)
 
     def before_save(self):
         validate_description(
@@ -16,4 +16,4 @@ class CancelationReason(BaseModel):
         )
 
     def __str__(self):
-        return self.descricao
+        return self.description

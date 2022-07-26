@@ -14,8 +14,8 @@ from apps.financial_transaction.models.payment_method import PaymentMethod
 class FinancialTransaction(BaseModel):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT)
-    valor = models.DecimalField(max_digits=9, decimal_places=2)
-    data_lancamento = models.DateTimeField()
+    amount = models.DecimalField(max_digits=9, decimal_places=2)
+    date = models.DateTimeField()
     financial_transaction_type = models.CharField(max_length=6, choices=FinancialTransactionType.choices)
 
     def before_save(self):
@@ -25,22 +25,22 @@ class FinancialTransaction(BaseModel):
         if not self.payment_method_id:
             raise FinancialTransactionError(MOVIMENTACAO_FINANCEIRA_FORMA_PAGAMENTO_OBRIGATORIO)
 
-        if not self.valor:
+        if not self.amount:
             raise FinancialTransactionError(MOVIMENTACAO_FINANCEIRA_VALOR_OBRIGATORIO)
 
-        if self.valor < 0:
+        if self.amount < 0:
             raise FinancialTransactionError(MOVIMENTACAO_FINANCEIRA_VALOR_NEGATIVO)
 
         if not self.financial_transaction_type:
             raise FinancialTransactionError(MOVIMENTACAO_FINANCEIRA_TIPO_LANCAMENTO_OBRIGATORIO)
 
-        if not self.data_lancamento:
-            self.data_lancamento = timezone.now()
+        if not self.date:
+            self.date = timezone.now()
 
     def __str__(self):
-        return f'{self.event.event_type.descricao} ' \
-               f'{self.event.cliente}, ' \
+        return f'{self.event.event_type.description} ' \
+               f'{self.event.clients}, ' \
                f'{self.financial_transaction_type} ' \
-               f'{self.valor} no ' \
+               f'{self.amount} no ' \
                f'{self.payment_method} em ' \
-               f'{self.data_lancamento}'
+               f'{self.date}'

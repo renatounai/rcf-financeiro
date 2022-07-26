@@ -7,14 +7,14 @@ from utils.string_utils import is_empty
 
 
 class Person(BaseModel):
-    nome = models.CharField(max_length=200, blank=False)
+    name = models.CharField(max_length=200, blank=False)
     email = models.EmailField(null=True, blank=True)
-    fone = models.CharField(null=True, max_length=20, blank=True)
+    phone = models.CharField(null=True, max_length=20, blank=True)
     instagram_user = models.CharField(max_length=100, null=True, blank=True)
     facebook_user = models.CharField(max_length=100, null=True, blank=True)
 
     def before_save(self):
-        if is_empty(self.nome):
+        if is_empty(self.name):
             raise ValidationError(PESSOA_NOME_OBRIGATORIO)
 
         # remove both the domain and the query string
@@ -29,4 +29,4 @@ class Person(BaseModel):
             self.facebook_user = user[0]
 
     def __str__(self):
-        return self.nome
+        return self.name

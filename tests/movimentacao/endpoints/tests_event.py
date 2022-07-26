@@ -21,19 +21,18 @@ class EventTest(TestCase):
         user_model.objects.create_user('temporary', 'temporary@gmail.com', 'temporary')
         self.client.login(username='temporary', password='temporary')
 
-        person = Person(nome="Renato")
+        person = Person(name="Renato")
         person.save()
 
-        event_type = EventType(descricao="Boudoir")
+        event_type = EventType(description="Boudoir")
         event_type.save()
 
         event_in = {
-            "quitado": False,
-            "gratuito": False,
+            "paid": False,
             "status": EventStatus.NEGOTIATING,
-            "cliente_id": person.id,
+            "clients_id": person.id,
             "event_type_id": event_type.id,
-            "valor_cobrado": 100.00,
+            "amount_charged": 100.00,
         }
 
         response = self.client.post("/api/events/", event_in, content_type=APPLICATION_JSON)
@@ -41,20 +40,19 @@ class EventTest(TestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_deve_lancar_erro_ao_informar_cancelation_reason_quando_nao_cancelado(self):
-        person = Person(nome="Renato")
+        person = Person(name="Renato")
         person.save()
 
-        event_type = EventType(descricao="Boudoir")
+        event_type = EventType(description="Boudoir")
         event_type.save()
 
-        cancelation_reason = CancelationReason(descricao="Não tem dinheiro")
+        cancelation_reason = CancelationReason(description="Não tem dinheiro")
         cancelation_reason.save()
 
         event_in = {
-            "quitado": False,
+            "paid": False,
             "status": EventStatus.NEGOTIATING,
-            "gratuito": False,
-            "cliente_id": person.id,
+            "clients_id": person.id,
             "event_type_id": event_type.id,
             "cancelation_reason_id": cancelation_reason.id
         }
@@ -64,9 +62,9 @@ class EventTest(TestCase):
         self.assertEqual(response.json()['detail'], EVENTO_MOTIVO_CANCELAMENTO_FORA_DO_STATUS_CANCELED)
 
     def test_deve_cancelar_event(self):
-        event = Event(quitado=False, status=EventStatus.NEGOTIATING, gratuito=False,
-                      cliente=Person.objects.create(nome="Renato"),
-                      event_type=EventType.objects.create(descricao="Boudoir"))
+        event = Event(paid=False, status=EventStatus.NEGOTIATING,
+                      clients=Person.objects.create(name="Renato"),
+                      event_type=EventType.objects.create(description="Boudoir"))
         event.save()
 
         cancelamento_in = {
@@ -80,12 +78,12 @@ class EventTest(TestCase):
         self.assertTrue(EventStatus.CANCELED, event.status)
 
     def test_deve_cancelar_event_with_cancelation_reason(self):
-        event = Event(quitado=False, status=EventStatus.NEGOTIATING, gratuito=False,
-                      cliente=Person.objects.create(nome="Renato"),
-                      event_type=EventType.objects.create(descricao="Boudoir"))
+        event = Event(paid=False, status=EventStatus.NEGOTIATING,
+                      clients=Person.objects.create(name="Renato"),
+                      event_type=EventType.objects.create(description="Boudoir"))
         event.save()
 
-        cancelation_reason = CancelationReason(descricao="Falta de dinheiro")
+        cancelation_reason = CancelationReason(description="Falta de dinheiro")
         cancelation_reason.save()
 
         cancelamento_in = {
@@ -99,34 +97,32 @@ class EventTest(TestCase):
         self.assertTrue(EventStatus.CANCELED, event.status)
 
     def test_shoud_get_all_events(self):
-        renato = Person(nome="Renato")
+        renato = Person(name="Renato")
         renato.save()
 
-        ellen = Person(nome="Ellen")
+        ellen = Person(name="Ellen")
         ellen.save()
 
-        event_type = EventType(descricao="Boudoir")
+        event_type = EventType(description="Boudoir")
         event_type.save()
 
         Event.objects.create(
-            agendado_para=datetime.datetime(2022, 6, 20, 16, tzinfo=timezone.utc),
-            valor_cobrado=300.0,
-            quitado=False,
+            scheduled_to=datetime.datetime(2022, 6, 20, 16, tzinfo=timezone.utc),
+            amount_charged=300.0,
+            paid=False,
             status=EventStatus.NEGOTIATING,
-            cliente=renato,
-            event_type=event_type,
-            gratuito=False
+            clients=renato,
+            event_type=event_type
         )
 
         Event.objects.create(
-            agendado_para=datetime.datetime(2022, 7, 20, 20, 30, tzinfo=timezone.utc),
-            valor_cobrado=0,
-            quitado=False,
+            scheduled_to=datetime.datetime(2022, 7, 20, 20, 30, tzinfo=timezone.utc),
+            amount_charged=0,
+            paid=False,
             status=EventStatus.NEGOTIATING,
-            cliente=ellen,
+            clients=ellen,
             event_type=event_type,
-            gratuito=True,
-            url_galeria="https://site.com"
+            gallery_url="https://site.com"
         )
 
         response = self.client.get("/api/events/")
@@ -134,37 +130,36 @@ class EventTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(events), 2)
-        self.assertEqual(events[0]["valor_cobrado"], 300.0)
-        self.assertEqual(events[0]["agendado_para"], '2022-06-20T16:00:00Z')
-        self.assertEqual(events[0]["quitado"], False)
+        self.assertEqual(events[0]["amount_charged"], 300.0)
+        self.assertEqual(events[0]["scheduled_to"], '2022-06-20T16:00:00Z')
+        self.assertEqual(events[0]["paid"], False)
         self.assertEqual(events[0]["status"], EventStatus.NEGOTIATING)
-        self.assertIsNone(events[0]["url_galeria"])
-        self.assertEqual(events[0]["cliente"]["nome"], "Renato")
+        self.assertIsNone(events[0]["gallery_url"])
+        self.assertEqual(events[0]["clients"]["name"], "Renato")
         self.assertEqual(events[0]["event_type_id"], event_type.id)
 
-        self.assertEqual(events[1]["valor_cobrado"], 0)
-        self.assertEqual(events[1]["agendado_para"], '2022-07-20T20:30:00Z')
-        self.assertEqual(events[1]["quitado"], False)
+        self.assertEqual(events[1]["amount_charged"], 0)
+        self.assertEqual(events[1]["scheduled_to"], '2022-07-20T20:30:00Z')
+        self.assertEqual(events[1]["paid"], False)
         self.assertEqual(events[1]["status"], EventStatus.NEGOTIATING)
-        self.assertEqual(events[1]["cliente"]["nome"], "Ellen")
-        self.assertEqual(events[1]["url_galeria"], "https://site.com")
+        self.assertEqual(events[1]["clients"]["name"], "Ellen")
+        self.assertEqual(events[1]["gallery_url"], "https://site.com")
         self.assertEqual(events[1]["event_type_id"], event_type.id)
 
     def test_should_get_an_event(self):
-        renato = Person(nome="Renato")
+        renato = Person(name="Renato")
         renato.save()
 
-        event_type = EventType(descricao="Boudoir")
+        event_type = EventType(description="Boudoir")
         event_type.save()
 
         event_saved = Event.objects.create(
-            agendado_para=datetime.datetime(2022, 6, 20, 16, tzinfo=timezone.utc),
-            valor_cobrado=300.0,
-            quitado=False,
+            scheduled_to=datetime.datetime(2022, 6, 20, 16, tzinfo=timezone.utc),
+            amount_charged=300.0,
+            paid=False,
             status=EventStatus.NEGOTIATING,
-            cliente=renato,
-            event_type=event_type,
-            gratuito=False
+            clients=renato,
+            event_type=event_type
         )
 
         response = self.client.get(f"/api/events/{event_saved.id}")
@@ -172,39 +167,37 @@ class EventTest(TestCase):
         event = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(event["id"], event_saved.id)
-        self.assertEqual(event["agendado_para"], '2022-06-20T16:00:00Z')
-        self.assertEqual(event["quitado"], False)
+        self.assertEqual(event["scheduled_to"], '2022-06-20T16:00:00Z')
+        self.assertEqual(event["paid"], False)
         self.assertEqual(event["status"], EventStatus.NEGOTIATING)
-        self.assertIsNone(event["url_galeria"])
-        self.assertEqual(event["cliente"]["nome"], "Renato")
+        self.assertIsNone(event["gallery_url"])
+        self.assertEqual(event["clients"]["name"], "Renato")
         self.assertEqual(event["event_type_id"], event_type.id)
 
     def test_should_update_an_event(self):
-        renato = Person(nome="Renato")
+        renato = Person(name="Renato")
         renato.save()
 
-        event_type = EventType(descricao="Boudoir")
+        event_type = EventType(description="Boudoir")
         event_type.save()
 
-        event_type_casamento = EventType(descricao="Casamento")
+        event_type_casamento = EventType(description="Casamento")
         event_type_casamento.save()
 
         event_saved = Event.objects.create(
-            agendado_para=datetime.datetime(2022, 6, 20, 16, tzinfo=timezone.utc),
-            valor_cobrado=300.0,
-            quitado=False,
+            scheduled_to=datetime.datetime(2022, 6, 20, 16, tzinfo=timezone.utc),
+            amount_charged=300.0,
+            paid=False,
             status=EventStatus.NEGOTIATING,
-            cliente=renato,
-            event_type=event_type,
-            gratuito=False
+            clients=renato,
+            event_type=event_type
         )
 
         event_in = {
-            "quitado": event_saved.quitado,
+            "paid": event_saved.paid,
             "status": event_saved.status,
-            "gratuito": event_saved.gratuito,
-            "cliente_id": event_saved.cliente_id,
-            "valor_cobrado": event_saved.valor_cobrado,
+            "clients_id": event_saved.clients_id,
+            "amount_charged": event_saved.amount_charged,
             "event_type_id": event_type_casamento.id,
         }
 
