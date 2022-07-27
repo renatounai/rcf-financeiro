@@ -12,6 +12,9 @@ APPLICATION_JSON = "application/json"
 
 class CancelationReasonTest(TestCase):
 
+    def setUp(self):
+        self.client.defaults["HTTP_AUTHORIZATION"] = "Bearer 123"
+
     def test_should_get_all_cancelation_reasons(self):
         CancelationReason.objects.create(description="Não tem dinheiro")
         CancelationReason.objects.create(description="Não gostou das fotos")

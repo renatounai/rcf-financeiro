@@ -22,7 +22,7 @@ router = Router()
 
 @router.post('/login', response={HTTPStatus.OK: JWTPairSchema}, auth=None)
 def login(_, auth: AuthSchema):
-    user = authenticate(**auth.dict())
+    user = authenticate(username=auth.username, password=auth.password)
     if user:
         refresh = RefreshToken.for_user(user)
         return JWTPairSchema(refresh=str(refresh), access=str(refresh.access_token))

@@ -13,6 +13,6 @@ class User(Schema):
 router = Router()
 
 
-@router.post("/", response={HTTPStatus.CREATED: None})
+@router.post("/", response={HTTPStatus.CREATED: None}, auth=None)
 def create_account(_, user: User):
     user_service.create_account(user)

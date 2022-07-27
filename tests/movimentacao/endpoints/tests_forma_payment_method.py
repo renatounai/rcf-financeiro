@@ -14,6 +14,9 @@ APPLICATION_JSON = "application/json"
 
 class PaymentMethodTest(TestCase):
 
+    def setUp(self):
+        self.client.defaults["HTTP_AUTHORIZATION"] = "Bearer 123"
+
     def test_should_get_all_payment_methods(self):
         PaymentMethod.objects.create(description="Pix")
         PaymentMethod.objects.create(description="Dinheiro")

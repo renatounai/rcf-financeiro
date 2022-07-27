@@ -1,5 +1,5 @@
 Django==4.0.6
-django-ninja==0.17.0
+django-ninja==0.19.1
 psycopg2-binary
 gunicorn
 email-validator==1.2.1

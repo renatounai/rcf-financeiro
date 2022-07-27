@@ -10,7 +10,6 @@ class PaymentMethod(BaseModel):
     description = models.CharField(max_length=30, blank=False, unique=True, null=False, verbose_name='Descrição')
 
     def before_save(self):
-        print("PaymentMethod.before_save")
         validate_description(self, FORMA_PAGAMENTO_DESCRICAO_OBRIGATORIA, FORMA_PAGAMENTO_DESCRICAO_REPETIDA)
 
     def __str__(self):

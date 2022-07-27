@@ -10,6 +10,9 @@ APPLICATION_JSON = "application/json"
 
 class PersonTest(TestCase):
 
+    def setUp(self):
+        self.client.defaults["HTTP_AUTHORIZATION"] = "Bearer 123"
+
     def test_should_get_all_persons(self):
         Person.objects.create(name="Renato")
         Person.objects.create(name="Ellen")

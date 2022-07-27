@@ -14,7 +14,7 @@ from apps.financial_transaction.endpoints.person_rest import router as persons_r
 from apps.financial_transaction.exceptions.FinancialTransactionError import FinancialTransactionError
 from project import settings
 
-auth = None if settings.TESTING else AuthBearer()
+auth = AuthBearer()
 api = NinjaAPI(auth=auth)
 
 

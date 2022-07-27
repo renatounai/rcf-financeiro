@@ -24,6 +24,10 @@ APPLICATION_JSON = "application/json"
 
 
 class FinancialTransactionTest(TestCase):
+
+    def setUp(self):
+        self.client.defaults["HTTP_AUTHORIZATION"] = "Bearer 123"
+
     event: Event
     pix: PaymentMethod
 

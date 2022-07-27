@@ -14,7 +14,7 @@ def create_account(user: User) -> User:
     if not user.email:
         raise FinancialTransactionError("O e-email é obrigatório!")
 
-    if User.objects.filter(username=user.email).exists():
+    if User.objects.filter(username__iexact=user.email).exists():
         raise FinancialTransactionError("Já existe um usuário com este e-mail!")
 
     return User.objects.create_user(user.email, user.email, user.password)

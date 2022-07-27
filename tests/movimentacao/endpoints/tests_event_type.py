@@ -13,6 +13,9 @@ APPLICATION_JSON = "application/json"
 
 class EventTypeTest(TestCase):
 
+    def setUp(self):
+        self.client.defaults["HTTP_AUTHORIZATION"] = "Bearer 123"
+
     def test_should_get_all_event_types(self):
         EventType.objects.create(description="Boudoir")
         EventType.objects.create(description="Gestante")

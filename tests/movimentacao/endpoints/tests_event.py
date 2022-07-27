@@ -1,6 +1,5 @@
 import datetime
 
-from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
@@ -16,11 +15,10 @@ APPLICATION_JSON = "application/json"
 
 class EventTest(TestCase):
 
-    def test_should_create_an_event(self):
-        user_model = get_user_model()
-        user_model.objects.create_user('temporary', 'temporary@gmail.com', 'temporary')
-        self.client.login(username='temporary', password='temporary')
+    def setUp(self):
+        self.client.defaults["HTTP_AUTHORIZATION"] = "Bearer 123"
 
+    def test_should_create_an_event(self):
         person = Person(name="Renato")
         person.save()
 
@@ -36,7 +34,6 @@ class EventTest(TestCase):
         }
 
         response = self.client.post("/api/events/", event_in, content_type=APPLICATION_JSON)
-        print(response.json())
         self.assertEqual(response.status_code, 201)
 
     def test_deve_lancar_erro_ao_informar_cancelation_reason_quando_nao_cancelado(self):
